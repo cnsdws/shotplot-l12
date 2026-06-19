@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ShootingMatch;
 
 class Firestring extends Model
 {
@@ -51,6 +52,6 @@ class Firestring extends Model
 
     public function match()
     {
-        return $this->belongsTo(Match::class);
+        return $this->belongsTo(ShootingMatch::class, 'match_id');
     }
 }

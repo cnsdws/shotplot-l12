@@ -132,6 +132,16 @@ class PositionsController extends Controller
             'windspeed',
             'elevation',
             'windage',
+            'shot1value',
+            'shot2value',
+            'shot3value',
+            'shot4value',
+            'shot5value',
+            'shot6value',
+            'shot7value',
+            'shot8value',
+            'shot9value',
+            'shot10value',
         ]));
 
         return redirect('indexfirestring/'.$match_id);
