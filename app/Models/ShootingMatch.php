@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Rifle;
 
 class ShootingMatch extends Model
 {
@@ -13,6 +14,7 @@ class ShootingMatch extends Model
         'place',
         'date',
         'riflenumber',
+        'rifle_id',
         'rangename',
     ];
 
@@ -24,5 +26,9 @@ class ShootingMatch extends Model
     public function firestrings()
     {
         return $this->hasMany(Firestring::class, 'match_id');
+    }
+    public function rifle()
+    {
+        return $this->belongsTo(Rifle::class);
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PositionsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RifleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+                                 
+    Route::get('/rifles', [RifleController::class, 'index']);
+    Route::get('/rifles/create', [RifleController::class, 'create']);
+    Route::post('/rifles', [RifleController::class, 'store']);
+    Route::get('/rifles/{rifle}/edit', [RifleController::class, 'edit']);
+    Route::post('/rifles/{rifle}', [RifleController::class, 'update']);
+    Route::post('/rifles/{rifle}/delete', [RifleController::class, 'destroy']);
 });
 
 Route::get('/logout', function () {

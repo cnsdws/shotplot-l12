@@ -6,7 +6,7 @@
     <meta name="description" content="ShotPlot is a website for tracking data collected in NRA Service Rifle Competitions.">
     @yield('title')
 
-    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
    
 
     <!-- Bootstrap -->
@@ -34,9 +34,10 @@
          <!--  <a class="navbar-brand" href="http://dwa15.com">CSCI - E15</a> -->
         </div>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="{{ url('/') }}" class="navbar-brand">Matches</a></li> 
-          </ul>
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url('/') }}">Matches</a></li>
+                <li><a href="{{ url('/rifles') }}">Rifles</a></li>
+            </ul>
         </div>
         <!--/.nav-collapse -->  
         
@@ -76,6 +77,6 @@
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../../js/bootstrap.js"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
   </body>
 </html>
