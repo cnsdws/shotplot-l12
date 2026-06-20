@@ -28,6 +28,16 @@ class Firestring extends Model
         'shot8value',
         'shot9value',
         'shot10value',
+        'shot11value',
+        'shot12value',
+        'shot13value',
+        'shot14value',
+        'shot15value',
+        'shot16value',
+        'shot17value',
+        'shot18value',
+        'shot19value',
+        'shot20value',
         'shot1x',
         'shot1y',
         'shot2x',
@@ -48,10 +58,34 @@ class Firestring extends Model
         'shot9y',
         'shot10x',
         'shot10y',
+        'shot11x',
+        'shot11y',
+        'shot12x',
+        'shot12y',
+        'shot13x',
+        'shot13y',
+        'shot14x',
+        'shot14y',
+        'shot15x',
+        'shot15y',
+        'shot16x',
+        'shot16y',
+        'shot17x',
+        'shot17y',
+        'shot18x',
+        'shot18y',
+        'shot19x',
+        'shot19y',
+        'shot20x',
+        'shot20y',
     ];
 
     public function match()
     {
         return $this->belongsTo(ShootingMatch::class, 'match_id');
+    }
+    public function getShotCountAttribute()
+    {
+        return $this->distance === '600 Yard Slow Fire' ? 20 : 10;
     }
 }

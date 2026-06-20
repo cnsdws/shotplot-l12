@@ -33,7 +33,7 @@
         <table class="table table-striped">
             <tbody>
                 <h4>Shot and Score</h4>
-                @for ($i = 1; $i <= 10; $i++)
+                @for ($i = 1; $i <= $firestring->shot_count; $i++)
                     <tr>
                         <td>Shot {{ $i }}</td>
                         <td>{{ $firestring->{'shot'.$i.'value'} }}</td>
@@ -50,6 +50,7 @@
     </div>
 </div>
 
+<script src="{{ asset('js/shotplot-targets.js') }}"></script>
 <script>
 (function () {
     const canvas = document.getElementById('targetCanvas');
@@ -58,14 +59,17 @@
     const center = 275;
     const maxRadius = 250;
 
+    const targetType = ShotPlotTargetForDistance(@json($firestring->distance));
+    const target = ShotPlotTargets[targetType] || ShotPlotTargets["SR"];
+
     const shots = [
-        @for ($i = 1; $i <= 10; $i++)
+        @for ($i = 1; $i <= $firestring->shot_count; $i++)
             {
                 n: {{ $i }},
                 score: @json($firestring->{'shot'.$i.'value'}),
                 x: @json($firestring->{'shot'.$i.'x'}),
                 y: @json($firestring->{'shot'.$i.'y'})
-            }{{ $i < 10 ? ',' : '' }}
+            }@if ($i < $firestring->shot_count),@endif
         @endfor
     ];
 
@@ -75,17 +79,28 @@
         ctx.fillStyle = '#f9f9f9';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 10; i >= 1; i--) {
-            const r = maxRadius * i / 10;
-
+        target.rings.forEach(function (ring) {
             ctx.beginPath();
-            ctx.arc(center, center, r, 0, Math.PI * 2);
-            ctx.fillStyle = i <= 4 ? '#222' : '#fff';
+            ctx.arc(center, center, ring.radius, 0, Math.PI * 2);
+
+            const scoreNum = Number(ring.score);
+            const isBlackRing =
+                target.blackRings.includes(ring.score) ||
+                target.blackRings.includes(scoreNum);
+
+            ctx.fillStyle = isBlackRing ? '#222' : '#fff';
             ctx.fill();
+
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 1;
             ctx.stroke();
-        }
+
+            ctx.fillStyle = isBlackRing ? '#fff' : '#333';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText(ring.score, center + 5, center - ring.radius + 14);
+        });
 
         ctx.beginPath();
         ctx.moveTo(center - maxRadius, center);
@@ -97,7 +112,18 @@
 
         ctx.fillStyle = '#000';
         ctx.font = '13px Arial';
-        ctx.fillText('200 Yard Target', 12, 22);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(target.label, 12, 22);
+    }
+
+    function isPointInBlack(x, y) {
+        const distanceFromCenter = Math.hypot(x - center, y - center);
+
+        return target.rings.some(function (ring) {
+            const scoreNum = Number(ring.score);
+            return target.blackRings.includes(scoreNum) && distanceFromCenter <= ring.radius;
+        });
     }
 
     function drawShots() {
@@ -113,12 +139,13 @@
                 return;
             }
 
-            const isInBlack = Math.hypot(shot.x - center, shot.y - center) <= (maxRadius * 4 / 10);
+            const isInBlack = isPointInBlack(x, y);
 
             ctx.beginPath();
-            ctx.arc(shot.x, shot.y, 9, 0, Math.PI * 2);
+            ctx.arc(x, y, 9, 0, Math.PI * 2);
             ctx.fillStyle = isInBlack ? '#ffffff' : '#d9534f';
             ctx.fill();
+
             ctx.strokeStyle = '#000000';
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -127,7 +154,7 @@
             ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(key, shot.x, shot.y);
+            ctx.fillText(shot.n, x, y);
         });
     }
 

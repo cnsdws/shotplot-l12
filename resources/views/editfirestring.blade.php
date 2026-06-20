@@ -31,7 +31,7 @@
         <div class="col-md-3">
             <h4>Shots</h4>
 
-            @for ($i = 1; $i <= 10; $i++)
+            @for ($i = 1; $i <= $firestring->shot_count; $i++)
                 <div class="form-group">
                     <label>Shot {{ $i }}</label>
                     <input class="form-control shot-score" type="text" name="shot{{ $i }}value" value="{{ $firestring->{'shot'.$i.'value'} }}">
@@ -49,7 +49,7 @@
             <div class="form-group">
                 <label for="activeShot">Active Shot</label>
                 <select id="activeShot" class="form-control" style="max-width:180px;">
-                    @for ($i = 1; $i <= 10; $i++)
+                    @for ($i = 1; $i <= $firestring->shot_count; $i++)
                         <option value="{{ $i }}">Shot {{ $i }}</option>
                     @endfor
                 </select>
@@ -68,6 +68,7 @@
     <a href="/indexfirestring/{{ $firestring->match_id }}" class="btn btn-default">Cancel</a>
 </form>
 
+<script src="{{ asset('js/shotplot-targets.js') }}"></script>
 <script>
 (function () {
     const canvas = document.getElementById('targetCanvas');
@@ -76,10 +77,14 @@
 
     const center = 275;
     const maxRadius = 250;
+    const shotCount = {{ $firestring->shot_count }};
+
+    const targetType = ShotPlotTargetForDistance(@json($firestring->distance));
+    const target = ShotPlotTargets[targetType] || ShotPlotTargets["SR"];
 
     const shots = {};
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= shotCount; i++) {
         const xInput = document.getElementById(`shot${i}x`);
         const yInput = document.getElementById(`shot${i}y`);
 
@@ -95,17 +100,28 @@
         ctx.fillStyle = '#f9f9f9';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 10; i >= 1; i--) {
-            const r = maxRadius * i / 10;
-
+        target.rings.forEach(function (ring) {
             ctx.beginPath();
-            ctx.arc(center, center, r, 0, Math.PI * 2);
-            ctx.fillStyle = i <= 4 ? '#222' : '#fff';
+            ctx.arc(center, center, ring.radius, 0, Math.PI * 2);
+
+            const scoreNum = Number(ring.score);
+            const isBlackRing =
+                target.blackRings.includes(ring.score) ||
+                target.blackRings.includes(scoreNum);
+
+            ctx.fillStyle = isBlackRing ? '#222' : '#fff';
             ctx.fill();
+
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 1;
             ctx.stroke();
-        }
+
+            ctx.fillStyle = isBlackRing ? '#fff' : '#333';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText(ring.score, center + 5, center - ring.radius + 14);
+        });
 
         ctx.beginPath();
         ctx.moveTo(center - maxRadius, center);
@@ -117,7 +133,34 @@
 
         ctx.fillStyle = '#000';
         ctx.font = '13px Arial';
-        ctx.fillText('200 Yard Target', 12, 22);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(target.label, 12, 22);
+    }
+
+    function isPointInBlack(x, y) {
+        const distanceFromCenter = Math.hypot(x - center, y - center);
+
+        return target.rings.some(function (ring) {
+            const scoreNum = Number(ring.score);
+            return target.blackRings.includes(scoreNum) && distanceFromCenter <= ring.radius;
+        });
+    }
+
+    function scoreShot(x, y) {
+        const distanceFromCenter = Math.hypot(x - center, y - center);
+
+        const sortedRings = [...target.rings].sort(function (a, b) {
+            return a.radius - b.radius;
+        });
+
+        for (const ring of sortedRings) {
+            if (distanceFromCenter <= ring.radius) {
+                return ring.score;
+            }
+        }
+
+        return 'M';
     }
 
     function drawShots() {
@@ -128,12 +171,13 @@
                 return;
             }
 
-            const isInBlack = Math.hypot(shot.x - center, shot.y - center) <= (maxRadius * 4 / 10);
+            const isInBlack = isPointInBlack(shot.x, shot.y);
 
             ctx.beginPath();
             ctx.arc(shot.x, shot.y, 9, 0, Math.PI * 2);
             ctx.fillStyle = isInBlack ? '#ffffff' : '#d9534f';
             ctx.fill();
+
             ctx.strokeStyle = '#000000';
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -147,7 +191,7 @@
     }
 
     function updateInputs() {
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= shotCount; i++) {
             const xInput = document.getElementById(`shot${i}x`);
             const yInput = document.getElementById(`shot${i}y`);
             const coords = document.getElementById(`shot${i}coords`);
@@ -182,7 +226,12 @@
 
         shots[activeShot] = { x, y };
 
-        if (activeShot < 10) {
+        const scoreInput = document.querySelector(`[name="shot${activeShot}value"]`);
+        if (scoreInput) {
+            scoreInput.value = scoreShot(x, y);
+        }
+
+        if (activeShot < shotCount) {
             activeShotSelect.value = activeShot + 1;
         }
 
@@ -196,7 +245,7 @@
     });
 
     document.getElementById('clearAllShots').addEventListener('click', function () {
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= shotCount; i++) {
             shots[i] = { x: null, y: null };
         }
         redraw();
