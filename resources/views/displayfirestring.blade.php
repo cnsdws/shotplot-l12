@@ -170,17 +170,28 @@
         avgX /= plottedShots.length;
         avgY /= plottedShots.length;
 
-        const dx = Math.round(avgX - center);
-        const dy = Math.round(center - avgY);
+        const outerDiameterInches = target.rings[0].diameterInches;
+        const inchesPerPixel = outerDiameterInches / (maxRadius * 2);
+        const inchesPerMOA = target.distanceYards * 1.047 / 100;
+
+        const dxPixels = avgX - center;
+        const dyPixels = center - avgY;
+
+        const dxMOA = (dxPixels * inchesPerPixel) / inchesPerMOA;
+        const dyMOA = (dyPixels * inchesPerPixel) / inchesPerMOA;
+
+        const horizontalDirection = dxMOA >= 0 ? 'Right' : 'Left';
+        const verticalDirection = dyMOA >= 0 ? 'High' : 'Low';
 
         document.getElementById('groupCenter').textContent =
-            dx + ' px horizontal, ' + dy + ' px vertical';
+            Math.abs(dxMOA).toFixed(2) + ' MOA ' + horizontalDirection +
+            ', ' +
+            Math.abs(dyMOA).toFixed(2) + ' MOA ' + verticalDirection;
 
         let maxSpread = 0;
 
         for (let i = 0; i < plottedShots.length; i++) {
             for (let j = i + 1; j < plottedShots.length; j++) {
-
                 const spread = Math.hypot(
                     plottedShots[i].x - plottedShots[j].x,
                     plottedShots[i].y - plottedShots[j].y
@@ -192,8 +203,10 @@
             }
         }
 
+        const extremeSpreadMOA = (maxSpread * inchesPerPixel) / inchesPerMOA;
+
         document.getElementById('extremeSpread').textContent =
-            maxSpread.toFixed(1) + ' px';
+            extremeSpreadMOA.toFixed(2) + ' MOA';
     }
 
     function drawShots() {
