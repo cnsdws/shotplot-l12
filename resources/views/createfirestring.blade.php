@@ -82,6 +82,7 @@
                     <p><strong>Shots Plotted:</strong> <span id="shotsPlotted">0</span></p>
                     <p><strong>Group Center:</strong> <span id="groupCenter">N/A</span></p>
                     <p><strong>Extreme Spread:</strong> <span id="extremeSpread">N/A</span></p>
+                    <p><strong>Mean Radius:</strong> <span id="meanRadius">N/A</span></p>
                 </div>
             </div>
 
@@ -267,6 +268,7 @@
         if (plottedShots.length < 2) {
             document.getElementById('groupCenter').textContent = 'N/A';
             document.getElementById('extremeSpread').textContent = 'N/A';
+            document.getElementById('meanRadius').textContent = 'N/A';
             return;
         }
 
@@ -318,6 +320,25 @@
 
         document.getElementById('extremeSpread').textContent =
         extremeSpreadMOA.toFixed(2) + ' MOA';
+
+        let totalRadius = 0;
+
+        plottedShots.forEach(function (shot) {
+            const radiusPixels = Math.hypot(
+                shot.x - avgX,
+                shot.y - avgY
+            );
+
+            totalRadius += radiusPixels;
+        });
+
+        const meanRadiusPixels = totalRadius / plottedShots.length;
+
+        const meanRadiusMOA =
+            (meanRadiusPixels * inchesPerPixel) / inchesPerMOA;
+
+        document.getElementById('meanRadius').textContent =
+            meanRadiusMOA.toFixed(2) + ' MOA';
 }
     function redraw() {
         target = getTarget();

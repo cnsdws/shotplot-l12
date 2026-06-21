@@ -219,7 +219,7 @@ class PositionsController extends Controller
 
     public function displayFirestring($id)
     {
-        $firestring = Firestring::findOrFail($id);
-        return view('displayfirestring', compact('firestring'));
+        $firestring = Firestring::with('match.rifle')->findOrFail($id);
+            return view('displayfirestring', compact('firestring'));
     }
 }
