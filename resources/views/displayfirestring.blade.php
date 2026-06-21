@@ -46,7 +46,7 @@
     <div class="col-md-6">
         <h4>Shot Plot</h4>
         <canvas id="targetCanvas" width="550" height="550" style="border:1px solid #ccc; max-width:100%;"></canvas>
-        <p class="text-muted">HTML5 target plotter replacing the original Flash target.</p>
+        
         <hr>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -94,7 +94,8 @@
 
         target.rings.forEach(function (ring) {
             ctx.beginPath();
-            ctx.arc(center, center, ring.radius, 0, Math.PI * 2);
+            const ringRadius = ShotPlotRingRadiusPx(target, ring, maxRadius);
+            ctx.arc(center, center, ringRadius, 0, Math.PI * 2);
 
             const scoreNum = Number(ring.score);
             const isBlackRing =
@@ -112,7 +113,7 @@
             ctx.font = '11px Arial';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText(ring.score, center + 5, center - ring.radius + 14);
+            ctx.fillText(ring.score, center + 5, center - ringRadius + 14);
         });
 
         ctx.beginPath();
@@ -138,7 +139,7 @@
             return (
                 target.blackRings.includes(ring.score) ||
                 target.blackRings.includes(scoreNum)
-            ) && distanceFromCenter <= ring.radius;
+            ) && distanceFromCenter <= ShotPlotRingRadiusPx(target, ring, maxRadius)
         });
     }
     

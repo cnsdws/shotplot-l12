@@ -130,7 +130,7 @@ class PositionsController extends Controller
         $firestring = Firestring::findOrFail($request->input('id'));
         $match_id = $firestring->match_id;
 
-        $firestring->update($request->only([
+        $fields = [
             'fire_string_number',
             'distance',
             'target',
@@ -140,37 +140,15 @@ class PositionsController extends Controller
             'windspeed',
             'elevation',
             'windage',
-            'shot1value',
-            'shot2value',
-            'shot3value',
-            'shot4value',
-            'shot5value',
-            'shot6value',
-            'shot7value',
-            'shot8value',
-            'shot9value',
-            'shot10value',
-            'shot1x',
-            'shot1y',
-	    'shot2x',
-	    'shot2y',
-	    'shot3x',
-	    'shot3y',
-	    'shot4x',
-	    'shot4y',
-	    'shot5x',
-	    'shot5y',
-	    'shot6x',
-	    'shot6y',
-	    'shot7x',
-	    'shot7y',
-	    'shot8x',
- 	    'shot8y',
-	    'shot9x',
-	    'shot9y',
-	    'shot10x',
-	    'shot10y',
-        ]));
+        ];
+
+        for ($i = 1; $i <= 20; $i++) {
+            $fields[] = "shot{$i}value";
+            $fields[] = "shot{$i}x";
+            $fields[] = "shot{$i}y";
+        }
+
+        $firestring->update($request->only($fields));
 
         return redirect('indexfirestring/'.$match_id);
     }
@@ -213,7 +191,7 @@ class PositionsController extends Controller
 
         $match = ShootingMatch::findOrFail($request->input('match_id'));
 
-        $firestring = new Firestring($request->only([
+        $fields = [
             'fire_string_number',
             'distance',
             'target',
@@ -223,17 +201,15 @@ class PositionsController extends Controller
             'windspeed',
             'elevation',
             'windage',
-            'shot1value',
-            'shot2value',
-            'shot3value',
-            'shot4value',
-            'shot5value',
-            'shot6value',
-            'shot7value',
-            'shot8value',
-            'shot9value',
-            'shot10value',
-        ]));
+        ];
+
+        for ($i = 1; $i <= 20; $i++) {
+            $fields[] = "shot{$i}value";
+            $fields[] = "shot{$i}x";
+            $fields[] = "shot{$i}y";
+        }
+
+        $firestring = new Firestring($request->only($fields));
 
         $firestring->match()->associate($match);
         $firestring->save();

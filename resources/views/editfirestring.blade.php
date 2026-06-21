@@ -102,7 +102,8 @@
 
         target.rings.forEach(function (ring) {
             ctx.beginPath();
-            ctx.arc(center, center, ring.radius, 0, Math.PI * 2);
+            const ringRadius = ShotPlotRingRadiusPx(target, ring, maxRadius);
+            ctx.arc(center, center, ringRadius, 0, Math.PI * 2);
 
             const scoreNum = Number(ring.score);
             const isBlackRing =
@@ -120,7 +121,7 @@
             ctx.font = '11px Arial';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText(ring.score, center + 5, center - ring.radius + 14);
+            ctx.fillText(ring.score, center + 5, center - ringRadius + 14);
         });
 
         ctx.beginPath();
@@ -143,7 +144,7 @@
 
         return target.rings.some(function (ring) {
             const scoreNum = Number(ring.score);
-            return target.blackRings.includes(scoreNum) && distanceFromCenter <= ring.radius;
+            return target.blackRings.includes(scoreNum) && distanceFromCenter <= ShotPlotRingRadiusPx(target, ring, maxRadius);
         });
     }
 
@@ -151,11 +152,11 @@
         const distanceFromCenter = Math.hypot(x - center, y - center);
 
         const sortedRings = [...target.rings].sort(function (a, b) {
-            return a.radius - b.radius;
+            return a.diameterInches - b.diameterInches;
         });
 
         for (const ring of sortedRings) {
-            if (distanceFromCenter <= ring.radius) {
+            if (distanceFromCenter <= ShotPlotRingRadiusPx(target, ring, maxRadius)) {
                 return ring.score;
             }
         }
