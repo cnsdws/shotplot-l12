@@ -57,6 +57,19 @@
 
             <canvas id="targetCanvas" width="550" height="550" style="border:1px solid #ccc; max-width:100%; cursor:crosshair;"></canvas>
 
+            <hr>
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Group Analysis</strong></div>
+                <div class="panel-body">
+                    <p><strong>Shots Plotted:</strong> <span id="shotsPlotted">0</span></p>
+                    <p><strong>Group Center:</strong> <span id="groupCenter">N/A</span></p>
+                    <p><strong>Extreme Spread:</strong> <span id="extremeSpread">N/A</span></p>
+                    <p><strong>Mean Radius:</strong> <span id="meanRadius">N/A</span></p>
+                    <p><strong>Suggested Correction:</strong> <span id="suggestedCorrection">N/A</span></p>
+                </div>
+            </div>
+
             <br><br>
             <button type="button" id="clearActiveShot" class="btn btn-warning">Clear Active Shot</button>
             <button type="button" id="clearAllShots" class="btn btn-danger">Clear All Shots</button>
@@ -78,6 +91,7 @@
     const center = 275;
     const maxRadius = 250;
     const shotCount = {{ $firestring->shot_count }};
+    const sightClickMOA = @json(optional(optional($firestring->match)->rifle)->sight_click_moa ?? 0.25);
 
     const targetType = ShotPlotTargetForDistance(@json($firestring->distance));
     const target = ShotPlotTargets[targetType] || ShotPlotTargets["SR"];
@@ -144,8 +158,11 @@
 
         return target.rings.some(function (ring) {
             const scoreNum = Number(ring.score);
-            return target.blackRings.includes(scoreNum) && distanceFromCenter <= ShotPlotRingRadiusPx(target, ring, maxRadius);
-        });
+        return (
+         target.blackRings.includes(ring.score) ||
+         target.blackRings.includes(scoreNum)
+        ) && distanceFromCenter <= ShotPlotRingRadiusPx(target, ring, maxRadius);
+         });
     }
 
     function scoreShot(x, y) {
@@ -209,10 +226,120 @@
         }
     }
 
+    function analyzeGroup() {
+        const plottedShots = [];
+
+        for (let i = 1; i <= shotCount; i++) {
+            const shot = shots[i];
+
+            if (shot.x !== null && shot.y !== null && !Number.isNaN(shot.x) && !Number.isNaN(shot.y)) {
+                plottedShots.push(shot);
+            }
+        }
+
+        document.getElementById('shotsPlotted').textContent = plottedShots.length;
+
+        if (plottedShots.length < 2) {
+            document.getElementById('groupCenter').textContent = 'N/A';
+            document.getElementById('extremeSpread').textContent = 'N/A';
+            document.getElementById('meanRadius').textContent = 'N/A';
+            document.getElementById('suggestedCorrection').textContent = 'N/A';
+            return;
+        }
+
+        let avgX = 0;
+        let avgY = 0;
+
+        plottedShots.forEach(function (shot) {
+            avgX += shot.x;
+            avgY += shot.y;
+        });
+
+        avgX /= plottedShots.length;
+        avgY /= plottedShots.length;
+
+        const outerDiameterInches = target.rings[0].diameterInches;
+        const inchesPerPixel = outerDiameterInches / (maxRadius * 2);
+        const inchesPerMOA = target.distanceYards * 1.047 / 100;
+
+        const dxPixels = avgX - center;
+        const dyPixels = center - avgY;
+
+        const dxMOA = (dxPixels * inchesPerPixel) / inchesPerMOA;
+        const dyMOA = (dyPixels * inchesPerPixel) / inchesPerMOA;
+
+        const horizontalDirection = dxMOA >= 0 ? 'Right' : 'Left';
+        const verticalDirection = dyMOA >= 0 ? 'High' : 'Low';
+
+        document.getElementById('groupCenter').textContent =
+            Math.abs(dxMOA).toFixed(2) + ' MOA ' + horizontalDirection +
+            ', ' +
+            Math.abs(dyMOA).toFixed(2) + ' MOA ' + verticalDirection;
+
+        let maxSpread = 0;
+
+        for (let i = 0; i < plottedShots.length; i++) {
+            for (let j = i + 1; j < plottedShots.length; j++) {
+                const spread = Math.hypot(
+                    plottedShots[i].x - plottedShots[j].x,
+                    plottedShots[i].y - plottedShots[j].y
+                );
+
+                if (spread > maxSpread) {
+                    maxSpread = spread;
+                }
+            }
+        }
+
+        const extremeSpreadMOA = (maxSpread * inchesPerPixel) / inchesPerMOA;
+
+        document.getElementById('extremeSpread').textContent =
+            extremeSpreadMOA.toFixed(2) + ' MOA';
+
+        let totalRadius = 0;
+
+        plottedShots.forEach(function (shot) {
+            const radiusPixels = Math.hypot(
+                shot.x - avgX,
+                shot.y - avgY
+            );
+
+            totalRadius += radiusPixels;
+        });
+
+        const meanRadiusPixels = totalRadius / plottedShots.length;
+
+        const meanRadiusMOA =
+            (meanRadiusPixels * inchesPerPixel) / inchesPerMOA;
+
+        document.getElementById('meanRadius').textContent =
+            meanRadiusMOA.toFixed(2) + ' MOA';
+
+        const horizontalClicks =
+            Math.round(Math.abs(dxMOA) / sightClickMOA);
+
+        const verticalClicks =
+            Math.round(Math.abs(dyMOA) / sightClickMOA);
+
+        const horizontalCorrection =
+            dxMOA > 0
+                ? horizontalClicks + ' Clicks Left'
+                : horizontalClicks + ' Clicks Right';
+
+        const verticalCorrection =
+            dyMOA > 0
+                ? verticalClicks + ' Clicks Down'
+                : verticalClicks + ' Clicks Up';
+
+        document.getElementById('suggestedCorrection').textContent =
+            horizontalCorrection + ', ' + verticalCorrection;
+    }
+
     function redraw() {
         drawTarget();
         drawShots();
         updateInputs();
+        analyzeGroup();
     }
 
     canvas.addEventListener('click', function (event) {

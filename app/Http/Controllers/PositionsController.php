@@ -121,8 +121,8 @@ class PositionsController extends Controller
 
     public function editFirestring($id)
     {
-        $firestring = Firestring::findOrFail($id);
-        return view('editfirestring', compact('firestring'));
+        $firestring = Firestring::with('match.rifle')->findOrFail($id);
+            return view('editfirestring', compact('firestring'));
     }
 
     public function handleEditFirestring(Request $request, $id)
