@@ -47,6 +47,7 @@
                             onclick="return confirm('Delete rifle?')">
                         Delete
                     </button>
+                    <a href="/rifles/{{ $rifle->id }}/zeros" class="btn btn-info">Zero Book</a>
                 </form>
             </td>
         </tr>

@@ -88,12 +88,10 @@
 
             <button type="button" id="clearActiveShot" class="btn btn-warning">Clear Active Shot</button>
             <button type="button" id="clearAllShots" class="btn btn-danger">Clear All Shots</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{ url('/indexfirestring/'.$match_id) }}" class="btn btn-link">Cancel</a>
         </div>
     </div>
-
-    <br>
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a href="{{ url('/indexfirestring/'.$match_id) }}" class="btn btn-link">Cancel</a>
 </form>
 
 <script src="{{ asset('js/shotplot-targets.js') }}"></script>

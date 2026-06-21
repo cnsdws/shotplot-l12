@@ -25,4 +25,9 @@ class Rifle extends Model
     {
         return $this->hasMany(ShootingMatch::class);
     }
+    public function zeros()
+    {
+        return $this->hasMany(RifleZero::class);
+    }
 }
+

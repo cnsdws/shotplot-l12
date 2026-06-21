@@ -47,7 +47,7 @@
             <p class="text-muted">Select a shot number, then click the target to place it.</p>
 
             <div class="form-group">
-                <label for="activeShot">Active Shot</label>
+                <label for="activeShot">Shot to Edit</label>
                 <select id="activeShot" class="form-control" style="max-width:180px;">
                     @for ($i = 1; $i <= $firestring->shot_count; $i++)
                         <option value="{{ $i }}">Shot {{ $i }}</option>
@@ -69,16 +69,12 @@
                     <p><strong>Suggested Correction:</strong> <span id="suggestedCorrection">N/A</span></p>
                 </div>
             </div>
-
-            <br><br>
             <button type="button" id="clearActiveShot" class="btn btn-warning">Clear Active Shot</button>
             <button type="button" id="clearAllShots" class="btn btn-danger">Clear All Shots</button>
+            <input type="submit" value="Save" class="btn btn-primary">
+            <a href="/indexfirestring/{{ $firestring->match_id }}" class="btn btn-default">Cancel</a>
         </div>
     </div>
-
-    <br>
-    <input type="submit" value="Save" class="btn btn-primary">
-    <a href="/indexfirestring/{{ $firestring->match_id }}" class="btn btn-default">Cancel</a>
 </form>
 
 <script src="{{ asset('js/shotplot-targets.js') }}"></script>
@@ -357,10 +353,6 @@
         const scoreInput = document.querySelector(`[name="shot${activeShot}value"]`);
         if (scoreInput) {
             scoreInput.value = scoreShot(x, y);
-        }
-
-        if (activeShot < shotCount) {
-            activeShotSelect.value = activeShot + 1;
         }
 
         redraw();
