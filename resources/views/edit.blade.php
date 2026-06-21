@@ -20,8 +20,11 @@
 					<label for="place">Place</label>
 				</div>
 				<div class="form-group">
-					<input type="text" class="form-group" name="date" value="{{ $match->date }}" />
-					<label for="date">Date</label>
+                    <input type="text"
+                           name="date"
+                           id="date"
+                           class="form-control"
+                           value="{{ old('date', $match->date) }}">
 				</div>
 				<div class="form-group">
 					<input type="text" class="form-group" name="riflenumber" value="{{ $match->riflenumber }}" />

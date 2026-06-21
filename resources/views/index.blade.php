@@ -19,20 +19,30 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th>Place</th>
-							<th>Date</th>
-							<th>Range</th>
-							<th>Firing Strings</th>
-							<th>Actions</th>
+                            <th>Place</th>
+                            <th>Date</th>
+                            <th>Rifle</th>
+                            <th>Range</th>
+                            <th>Firing Strings</th>
+                            <th>Actions</th>
 						</tr>
 					</thead>
 
 					<tbody>
 						@foreach($matches as $match)
 						<tr>
-							<td>{{ $match->place }}</td>
-							<td>{{ $match->date }}</td>
-							<td>{{ $match->rangename }}</td>
+                            <td>{{ $match->place }}</td>
+                            <td>{{ $match->date }}</td>
+
+                            <td>
+                                @if ($match->rifle)
+                                    {{ $match->rifle->name }}
+                                @else
+                                    {{ $match->riflenumber }}
+                                @endif
+                            </td>
+
+                            <td>{{ $match->rangename }}</td>
 							<td><a href="/firestring/{{$match->id}}">Firestrings</a></td>
 							<td><a href="{{ url('/edit/'.$match->id) }}" class="btn btn-default">Edit</a>
 							<a href="{{ url('/delete/'.$match->id) }}"  class="btn btn-danger">Delete</a> </td>

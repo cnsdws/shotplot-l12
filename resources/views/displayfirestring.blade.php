@@ -47,7 +47,20 @@
         <h4>Shot Plot</h4>
         <canvas id="targetCanvas" width="550" height="550" style="border:1px solid #ccc; max-width:100%;"></canvas>
         <p class="text-muted">HTML5 target plotter replacing the original Flash target.</p>
+        <hr>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Group Analysis</strong>
+            </div>
+
+            <div class="panel-body">
+                <p><strong>Shots Plotted:</strong> <span id="shotsPlotted">0</span></p>
+                <p><strong>Group Center:</strong> <span id="groupCenter">N/A</span></p>
+                <p><strong>Extreme Spread:</strong> <span id="extremeSpread">N/A</span></p>
+            </div>
+        </div>
     </div>
+    
 </div>
 
 <script src="{{ asset('js/shotplot-targets.js') }}"></script>
@@ -122,8 +135,64 @@
 
         return target.rings.some(function (ring) {
             const scoreNum = Number(ring.score);
-            return target.blackRings.includes(scoreNum) && distanceFromCenter <= ring.radius;
+            return (
+                target.blackRings.includes(ring.score) ||
+                target.blackRings.includes(scoreNum)
+            ) && distanceFromCenter <= ring.radius;
         });
+    }
+    
+    function analyzeGroup() {
+
+        const plottedShots = shots.filter(function (shot) {
+            return shot.x !== null &&
+                   shot.y !== null &&
+                   shot.x !== '' &&
+                   shot.y !== '';
+        });
+
+        document.getElementById('shotsPlotted').textContent =
+            plottedShots.length;
+
+        if (plottedShots.length < 2) {
+            return;
+        }
+
+        let avgX = 0;
+        let avgY = 0;
+
+        plottedShots.forEach(function (shot) {
+            avgX += Number(shot.x);
+            avgY += Number(shot.y);
+        });
+
+        avgX /= plottedShots.length;
+        avgY /= plottedShots.length;
+
+        const dx = Math.round(avgX - center);
+        const dy = Math.round(center - avgY);
+
+        document.getElementById('groupCenter').textContent =
+            dx + ' px horizontal, ' + dy + ' px vertical';
+
+        let maxSpread = 0;
+
+        for (let i = 0; i < plottedShots.length; i++) {
+            for (let j = i + 1; j < plottedShots.length; j++) {
+
+                const spread = Math.hypot(
+                    plottedShots[i].x - plottedShots[j].x,
+                    plottedShots[i].y - plottedShots[j].y
+                );
+
+                if (spread > maxSpread) {
+                    maxSpread = spread;
+                }
+            }
+        }
+
+        document.getElementById('extremeSpread').textContent =
+            maxSpread.toFixed(1) + ' px';
     }
 
     function drawShots() {
@@ -160,6 +229,7 @@
 
     drawTarget();
     drawShots();
+    analyzeGroup();
 })();
 </script>
 @stop

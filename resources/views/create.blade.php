@@ -24,12 +24,24 @@
 
     <div class="form-group">
         <label for="date">Date</label>
-        <input type="date" name="date" id="date" class="form-control" value="{{ old('date') }}">
+        <input type="text"
+               name="date"
+               id="date"
+               class="form-control"
+               value="{{ old('date', date('Y-m-d')) }}"
+               placeholder="YYYY-MM-DD">
     </div>
 
     <div class="form-group">
-        <label for="riflenumber">Rifle Number</label>
-        <input type="text" name="riflenumber" id="riflenumber" class="form-control" value="{{ old('riflenumber') }}">
+        <label for="rifle_id">Rifle</label>
+        <select name="rifle_id" id="rifle_id" class="form-control">
+            <option value="">-- Select Rifle --</option>
+            @foreach ($rifles as $rifle)
+                <option value="{{ $rifle->id }}" {{ old('rifle_id') == $rifle->id ? 'selected' : '' }}>
+                    {{ $rifle->name }} @if($rifle->caliber) - {{ $rifle->caliber }} @endif
+                </option>
+            @endforeach
+        </select>
     </div>
 
     <div class="form-group">

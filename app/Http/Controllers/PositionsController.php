@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Firestring;
 use App\Models\ShootingMatch;
 use App\Models\User;
+use App\Models\Rifle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,8 @@ class PositionsController extends Controller
 
     public function create()
     {
-        return view('create');
+        $rifles = Rifle::where('user_id', Auth::id())->orderBy('name')->get();
+        return view('create', compact('rifles'));
     }
 
     public function handleCreate(Request $request)
@@ -27,10 +29,12 @@ class PositionsController extends Controller
         $data = $request->validate([
             'place' => 'required',
             'date' => 'required',
+            'rifle_id' => 'nullable|exists:rifles,id',
             'riflenumber' => 'nullable',
             'rangename' => 'nullable',
         ]);
 
+        $data['riflenumber'] = '';
         $data['user_id'] = Auth::id();
 
         ShootingMatch::create($data);
@@ -40,7 +44,8 @@ class PositionsController extends Controller
 
     public function edit(ShootingMatch $match)
     {
-        return view('edit', compact('match'));
+        $rifles = Rifle::where('user_id', Auth::id())->orderBy('name')->get();
+        return view('edit', compact('match', 'rifles'));
     }
 
     public function handleEdit(Request $request)
@@ -50,6 +55,7 @@ class PositionsController extends Controller
         $match->update([
             'place' => $request->input('place'),
             'date' => $request->input('date'),
+            'rifle_id' => $request->input('rifle_id'),
             'riflenumber' => $request->input('riflenumber'),
             'rangename' => $request->input('rangename'),
             'user_id' => Auth::id(),
@@ -66,6 +72,8 @@ class PositionsController extends Controller
     public function handleDelete(Request $request)
     {
         $match = ShootingMatch::findOrFail($request->input('match'));
+
+        $match->firestrings()->delete();
         $match->delete();
 
         return redirect()->action([self::class, 'index']);
