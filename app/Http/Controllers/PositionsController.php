@@ -225,7 +225,13 @@ class PositionsController extends Controller
 
     public function displayFirestring($id)
     {
-        $firestring = Firestring::with('match.rifle')->findOrFail($id);
-            return view('displayfirestring', compact('firestring'));
+        $firestring = Firestring::with([
+            'match.rifle',
+            'adjustments' => function ($query) {
+                $query->orderBy('shot_number');
+            },
+        ])->findOrFail($id);
+
+        return view('displayfirestring', compact('firestring'));
     }
 }

@@ -28,6 +28,57 @@
                 <tr><td>Windage</td><td>{{ $firestring->windage }}</td></tr>
             </tbody>
         </table>
+
+        <hr>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+            <a data-toggle="collapse" href="#adjustmentLogPanel">
+                <strong>Adjustment Log</strong>
+            </a>
+            </div>
+
+            <div id="adjustmentLogPanel" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    @if ($firestring->adjustments->isEmpty())
+                        <p class="text-muted">No sight adjustments recorded.</p>
+                    @else
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Shot</th>
+                                    <th>Elevation</th>
+                                    <th>Windage</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($firestring->adjustments as $adjustment)
+                                    <tr>
+                                        <td>{{ $adjustment->shot_number }}</td>
+                                        <td>{{ $adjustment->elevation_setting }}</td>
+                                        <td>
+                                            @if ($adjustment->windage_setting > 0)
+                                                {{ $adjustment->windage_setting }}R
+                                            @elseif ($adjustment->windage_setting < 0)
+                                                {{ abs($adjustment->windage_setting) }}L
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
+                                        <td>{{ $adjustment->notes }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+
+                    <a href="/firestrings/{{ $firestring->id }}/adjustments" class="btn btn-info">
+                        Manage Adjustments
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="col-md-2">
@@ -51,17 +102,22 @@
         <hr>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <strong>Group Analysis</strong>
+                <a data-toggle="collapse" href="#groupAnalysisPanel">
+                    <strong>Group Analysis</strong>
+                </a>
             </div>
 
-            <div class="panel-body">
-                <p><strong>Shots Plotted:</strong> <span id="shotsPlotted">0</span></p>
-                <p><strong>Group Center:</strong> <span id="groupCenter">N/A</span></p>
-                <p><strong>Extreme Spread:</strong> <span id="extremeSpread">N/A</span></p>
-                <p><strong>Mean Radius:</strong> <span id="meanRadius">N/A</span></p>
-                <p><strong>Suggested Correction:</strong> <span id="suggestedCorrection">N/A</span></p>
+            <div id="groupAnalysisPanel" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <p><strong>Shots Plotted:</strong> <span id="shotsPlotted">0</span></p>
+                    <p><strong>Group Center:</strong> <span id="groupCenter">N/A</span></p>
+                    <p><strong>Extreme Spread:</strong> <span id="extremeSpread">N/A</span></p>
+                    <p><strong>Mean Radius:</strong> <span id="meanRadius">N/A</span></p>
+                    <p><strong>Suggested Correction:</strong> <span id="suggestedCorrection">N/A</span></p>
+                </div>
             </div>
         </div>
+
     </div>
     
 </div>
