@@ -38,6 +38,12 @@
                     <td>{{ $zero->notes }}</td>
                     <td>
                         <a href="/rifle-zeros/{{ $zero->id }}/edit" class="btn btn-default">Edit</a>
+                        <form method="POST" action="/rifle-zeros/{{ $zero->id }}/delete" style="display:inline;">
+                            @csrf
+                            <button class="btn btn-danger" onclick="return confirm('Delete this zero?')">
+                                Delete
+                            </button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
