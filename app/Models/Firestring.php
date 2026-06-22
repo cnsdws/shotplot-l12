@@ -88,4 +88,8 @@ class Firestring extends Model
     {
         return $this->distance === '600 Yard Slow Fire' ? 20 : 10;
     }
+    public function adjustments()
+    {
+        return $this->hasMany(FirestringAdjustment::class);
+    }
 }

@@ -7,6 +7,7 @@
 @section('editfirestring')
 <br>
 <li><a href="/indexfirestring/{{ $firestring->match_id }}" class="navbar-brand">Back to Firestrings</a></li>
+    <a href="/firestrings/{{ $firestring->id }}/adjustments" class="btn btn-info">Adjustment Log</a>
 
 <br><br>
 

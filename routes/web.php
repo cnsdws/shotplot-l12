@@ -6,6 +6,7 @@ use App\Http\Controllers\RifleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RifleZeroController;
+use App\Http\Controllers\FirestringAdjustmentController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [PositionsController::class, 'index']);
@@ -56,6 +57,13 @@ Route::middleware('auth')->group(function () {
    Route::get('/rifle-zeros/{zero}/edit', [RifleZeroController::class, 'edit']);
    Route::post('/rifle-zeros/{zero}', [RifleZeroController::class, 'update']);
    Route::post('/rifle-zeros/{zero}/delete', [RifleZeroController::class, 'destroy']);
+                                 
+   Route::get('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'index']);
+   Route::get('/firestrings/{firestring}/adjustments/create', [FirestringAdjustmentController::class, 'create']);
+   Route::post('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'store']);
+   Route::get('/firestring-adjustments/{adjustment}/edit', [FirestringAdjustmentController::class, 'edit']);
+   Route::post('/firestring-adjustments/{adjustment}', [FirestringAdjustmentController::class, 'update']);
+   Route::post('/firestring-adjustments/{adjustment}/delete', [FirestringAdjustmentController::class, 'destroy']);
 });
 
 Route::get('/logout', function () {

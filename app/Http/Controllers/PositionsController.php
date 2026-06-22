@@ -178,7 +178,13 @@ class PositionsController extends Controller
 
     public function createFirestring($match_id)
     {
-        return view('createfirestring', compact('match_id'));
+        $match = ShootingMatch::with('rifle.zeros')->findOrFail($match_id);
+
+        $zeros = $match->rifle
+            ? $match->rifle->zeros->keyBy('distance')
+            : collect();
+
+        return view('createfirestring', compact('match_id', 'match', 'zeros'));
     }
 
     public function handleCreateFirestring(Request $request)

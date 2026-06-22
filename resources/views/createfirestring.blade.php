@@ -101,8 +101,11 @@
     const ctx = canvas.getContext('2d');
     const center = 275;
     const maxRadius = 250;
+    const zeroBook = @json($zeros);
 
     const distanceSelect = document.getElementById('distance');
+    const elevationInput = document.querySelector('[name="elevation"]');
+    const windageInput = document.querySelector('[name="windage"]');
     const activeShotSelect = document.getElementById('activeShot');
 
     let shotCount = getShotCount();
@@ -337,7 +340,26 @@
 
         document.getElementById('meanRadius').textContent =
             meanRadiusMOA.toFixed(2) + ' MOA';
-}
+    }
+
+    function applyZeroForDistance() {
+        const zero = zeroBook[distanceSelect.value];
+
+        if (!zero) {
+            elevationInput.value = '';
+            windageInput.value = '';
+            return;
+        }
+
+        if (elevationInput) {
+            elevationInput.value = zero.elevation ?? '';
+        }
+
+        if (windageInput) {
+            windageInput.value = zero.windage ?? '';
+        }
+    }
+
     function redraw() {
         target = getTarget();
         shotCount = getShotCount();
@@ -399,10 +421,12 @@
     distanceSelect.addEventListener('change', function () {
         shotCount = getShotCount();
         rebuildActiveShotOptions();
+        applyZeroForDistance();
         redraw();
     });
 
     rebuildActiveShotOptions();
+    applyZeroForDistance();
     redraw();
 })();
 </script>
