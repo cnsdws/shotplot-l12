@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/indexfirestring/{id}', [PositionsController::class, 'indexFirestring']);
     Route::get('/firestring/{id}', [PositionsController::class, 'indexFirestring']);
     Route::get('/displayfirestring/{id}', [PositionsController::class, 'displayFirestring']);
+    Route::get('/displayfirestring/{id}/print', [PositionsController::class, 'printFirestring']);
 
     Route::get('/dashboard', [PositionsController::class, 'index'])->name('dashboard');
 
@@ -51,19 +52,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/rifles/{rifle}', [RifleController::class, 'update']);
     Route::post('/rifles/{rifle}/delete', [RifleController::class, 'destroy']);
                                  
-   Route::get('/rifles/{rifle}/zeros', [RifleZeroController::class, 'index']);
-   Route::get('/rifles/{rifle}/zeros/create', [RifleZeroController::class, 'create']);
-   Route::post('/rifles/{rifle}/zeros', [RifleZeroController::class, 'store']);
-   Route::get('/rifle-zeros/{zero}/edit', [RifleZeroController::class, 'edit']);
-   Route::post('/rifle-zeros/{zero}', [RifleZeroController::class, 'update']);
-   Route::post('/rifle-zeros/{zero}/delete', [RifleZeroController::class, 'destroy']);
+    Route::get('/rifles/{rifle}/zeros', [RifleZeroController::class, 'index']);
+    Route::get('/rifles/{rifle}/zeros/create', [RifleZeroController::class, 'create']);
+    Route::post('/rifles/{rifle}/zeros', [RifleZeroController::class, 'store']);
+    Route::get('/rifle-zeros/{zero}/edit', [RifleZeroController::class, 'edit']);
+    Route::post('/rifle-zeros/{zero}', [RifleZeroController::class, 'update']);
+    Route::post('/rifle-zeros/{zero}/delete', [RifleZeroController::class, 'destroy']);
                                  
-   Route::get('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'index']);
-   Route::get('/firestrings/{firestring}/adjustments/create', [FirestringAdjustmentController::class, 'create']);
-   Route::post('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'store']);
-   Route::get('/firestring-adjustments/{adjustment}/edit', [FirestringAdjustmentController::class, 'edit']);
-   Route::post('/firestring-adjustments/{adjustment}', [FirestringAdjustmentController::class, 'update']);
-   Route::post('/firestring-adjustments/{adjustment}/delete', [FirestringAdjustmentController::class, 'destroy']);
+    Route::get('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'index']);
+    Route::get('/firestrings/{firestring}/adjustments/create', [FirestringAdjustmentController::class, 'create']);
+    Route::post('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'store']);
+    Route::get('/firestring-adjustments/{adjustment}/edit', [FirestringAdjustmentController::class, 'edit']);
+    Route::post('/firestring-adjustments/{adjustment}', [FirestringAdjustmentController::class, 'update']);
+    Route::post('/firestring-adjustments/{adjustment}/delete', [FirestringAdjustmentController::class, 'destroy']);
+                                 
+    
 });
 
 Route::get('/logout', function () {

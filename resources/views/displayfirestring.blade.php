@@ -8,6 +8,7 @@
 <br>
 <li><a href="/indexfirestring/{{ $firestring->match_id }}" class="navbar-brand">Back to Firestrings</a></li>
     <a href="/firestrings/{{ $firestring->id }}/adjustments" class="btn btn-info">Adjustment Log</a>
+    <a href="/displayfirestring/{{ $firestring->id }}/print" class="btn btn-success"> Print Report </a>
 
 <br><br>
 
