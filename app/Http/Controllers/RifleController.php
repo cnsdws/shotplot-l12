@@ -68,4 +68,15 @@ class RifleController extends Controller
 
         return redirect('/rifles');
     }
+    public function history(Rifle $rifle)
+    {
+        $zeros = $rifle->zeros()->orderBy('distance')->get();
+
+        $matches = $rifle->matches()
+            ->with('firestrings')
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('rifles.history', compact('rifle', 'zeros', 'matches'));
+    }
 }

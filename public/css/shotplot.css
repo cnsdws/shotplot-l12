@@ -1,0 +1,27 @@
+.report-table > tbody > tr > th,
+.report-table > tbody > tr > td {
+    padding: 3px !important;
+    line-height: 1.1 !important;
+    font-size: 12px;
+    vertical-align: top;
+}
+
+.report-table {
+    margin-bottom: 5px;
+}
+
+#targetCanvas {
+    width: 425px;
+    height: 425px;
+    display: block;
+    margin: 0 auto;
+}
+.print-report-row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.print-report-col {
+    padding-left: 4px;
+    padding-right: 4px;
+}

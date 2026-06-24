@@ -48,6 +48,7 @@
                         Delete
                     </button>
                     <a href="/rifles/{{ $rifle->id }}/zeros" class="btn btn-info">Zero Book</a>
+                    <a href="/rifles/{{ $rifle->id }}/history" class="btn btn-default">History</a>
                 </form>
             </td>
         </tr>

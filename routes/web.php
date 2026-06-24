@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/rifle-zeros/{zero}', [RifleZeroController::class, 'update']);
     Route::post('/rifle-zeros/{zero}/delete', [RifleZeroController::class, 'destroy']);
                                  
+    Route::get('/rifles/{rifle}/history', [RifleController::class, 'history']);
+                                 
     Route::get('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'index']);
     Route::get('/firestrings/{firestring}/adjustments/create', [FirestringAdjustmentController::class, 'create']);
     Route::post('/firestrings/{firestring}/adjustments', [FirestringAdjustmentController::class, 'store']);
