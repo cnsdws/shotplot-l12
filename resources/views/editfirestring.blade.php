@@ -24,6 +24,9 @@
             <div class="form-group"><label>Light Direction</label><input class="form-control" type="text" name="lightdirection" value="{{ $firestring->lightdirection }}"></div>
             <div class="form-group"><label>Wind Direction</label><input class="form-control" type="text" name="winddirection" value="{{ $firestring->winddirection }}"></div>
             <div class="form-group"><label>Wind Speed</label><input class="form-control" type="text" name="windspeed" value="{{ $firestring->windspeed }}"></div>
+            <div class="form-group"><label>Temperature</label><input class="form-control" type="number" name="temperature" value="{{ $firestring->temperature }}"></div>
+            <div class="form-group"><label>Sky Condition</label><input class="form-control" type="text" name="sky_condition" value="{{ $firestring->sky_condition }}"></div>
+            <div class="form-group"><label>Range Notes</label><textarea class="form-control" name="range_notes" rows="3">{{ $firestring->range_notes }}</textarea></div>
             <div class="form-group"><label>Elevation</label><input class="form-control" type="text" name="elevation" value="{{ $firestring->elevation }}"></div>
             <div class="form-group"><label>Windage</label><input class="form-control" type="text" name="windage" value="{{ $firestring->windage }}"></div>
         </div>

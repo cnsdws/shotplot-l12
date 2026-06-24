@@ -25,6 +25,9 @@
                 <tr><td>Light Direction</td><td>{{ $firestring->lightdirection }}</td></tr>
                 <tr><td>Wind Direction</td><td>{{ $firestring->winddirection }}</td></tr>
                 <tr><td>Wind Speed</td><td>{{ $firestring->windspeed }}</td></tr>
+                <tr><td>Temperature</td><td>{{ $firestring->temperature }}</td></tr>
+                <tr><td>Sky Condition</td><td>{{ $firestring->sky_condition }}</td></tr>
+                <tr><td>Notes</td><td>{{ $firestring->range_notes }}</td></tr>
                 <tr><td>Elevation</td><td>{{ $firestring->elevation }}</td></tr>
                 <tr><td>Windage</td><td>{{ $firestring->windage }}</td></tr>
             </tbody>

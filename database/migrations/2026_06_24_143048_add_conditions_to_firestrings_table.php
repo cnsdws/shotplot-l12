@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('firestrings', function (Blueprint $table) {
+            $table->integer('temperature')->nullable();
+            $table->string('sky_condition')->nullable();
+            $table->text('range_notes')->nullable();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('firestrings', function (Blueprint $table) {
+            $table->dropColumn([
+                'temperature',
+                'sky_condition',
+                'range_notes',
+            ]);
+        });
+    }
+};

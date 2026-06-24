@@ -138,6 +138,9 @@ class PositionsController extends Controller
             'lightdirection',
             'winddirection',
             'windspeed',
+            'temperature',
+            'sky_condition',
+            'range_notes',
             'elevation',
             'windage',
         ];
@@ -205,6 +208,9 @@ class PositionsController extends Controller
             'lightdirection',
             'winddirection',
             'windspeed',
+            'temperature',
+            'sky_condition',
+            'range_notes',
             'elevation',
             'windage',
         ];

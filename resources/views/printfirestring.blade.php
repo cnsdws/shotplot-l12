@@ -40,6 +40,17 @@
 <h2>Firestring Report</h2>
 
 <table class="table table-bordered">
+
+    <tr>
+        <th>Rifle</th>
+        <td>{{ optional($firestring->match->rifle)->name }}</td>
+    </tr>
+
+    <tr>
+        <th>Date</th>
+        <td>{{ optional($firestring->match)->date }}</td>
+    </tr>
+
     <tr>
         <th>Firestring</th>
         <td>{{ $firestring->fire_string_number }}</td>
@@ -64,9 +75,42 @@
         <th>Windage</th>
         <td>{{ $firestring->windage }}</td>
     </tr>
-</table>
 
-<h3>Shots</h3>
+    <tr>
+        <th>Wind Direction</th>
+        <td>{{ $firestring->winddirection }}</td>
+    </tr>
+
+    <tr>
+        <th>Wind Speed</th>
+        <td>{{ $firestring->windspeed }}</td>
+    </tr>
+
+    <tr>
+        <th>Light Direction</th>
+        <td>{{ $firestring->lightdirection }}</td>
+    </tr>
+
+    <tr>
+        <th>Temperature</th>
+        <td>
+            @if($firestring->temperature)
+                {{ $firestring->temperature }}°F
+            @endif
+        </td>
+    </tr>
+
+    <tr>
+        <th>Sky Condition</th>
+        <td>{{ $firestring->sky_condition }}</td>
+    </tr>
+
+    <tr>
+        <th>Range Notes</th>
+        <td>{{ $firestring->range_notes }}</td>
+    </tr>
+
+</table>
 
 @php
     $adjustmentsByShot = $firestring->adjustments->keyBy('shot_number');
@@ -85,17 +129,25 @@
 
     <tbody>
         @for ($i = 1; $i <= $firestring->shot_count; $i++)
+
             @php
                 $adjustment = $adjustmentsByShot->get($i);
             @endphp
 
             <tr>
                 <td>{{ $i }}</td>
-                <td>{{ $firestring->{'shot'.$i.'value'} }}</td>
+
+                <td>
+                    {{ $firestring->{'shot'.$i.'value'} }}
+                </td>
+
                 <td>
                     @if ($adjustment)
+
                         Elev {{ $adjustment->elevation_setting }},
+
                         Wind
+
                         @if ($adjustment->windage_setting > 0)
                             {{ $adjustment->windage_setting }}R
                         @elseif ($adjustment->windage_setting < 0)
@@ -107,9 +159,12 @@
                         @if ($adjustment->notes)
                             — {{ $adjustment->notes }}
                         @endif
+
                     @endif
                 </td>
+
             </tr>
+
         @endfor
     </tbody>
 </table>

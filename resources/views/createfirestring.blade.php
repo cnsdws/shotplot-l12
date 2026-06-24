@@ -46,6 +46,21 @@
             </div>
 
             <div class="form-group"><label>Wind Speed MPH</label><input type="text" name="windspeed" class="form-control"></div>
+            <div class="form-group">
+                <label>Temperature</label>
+                <input type="number" name="temperature" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Sky Condition</label>
+                <input type="text" name="sky_condition" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Range Notes</label>
+                <textarea name="range_notes" class="form-control" rows="3"></textarea>
+            </div>
+
             <div class="form-group"><label>Rifle Elevation</label><input type="text" name="elevation" class="form-control"></div>
             <div class="form-group"><label>Rifle Windage</label><input type="text" name="windage" class="form-control"></div>
         </div>
