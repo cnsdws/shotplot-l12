@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RifleZeroController;
 use App\Http\Controllers\FirestringAdjustmentController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AnalysisController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [PositionsController::class, 'index']);
@@ -22,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/delete/{match}', [PositionsController::class, 'delete']);
     Route::post('/delete', [PositionsController::class, 'handleDelete']);
                                  
-    Route::get('/match/{match}/summary', [PositionsController::class, 'matchSummary']);
+    Route::get('/match/{match}/summary', [AnalysisController::class, 'matchSummary']);
 
     Route::get('/myaccount', [PositionsController::class, 'myaccount']);
     Route::post('/myaccount', [PositionsController::class, 'handleMyAccount']);

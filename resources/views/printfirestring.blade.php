@@ -7,18 +7,34 @@
     <link rel="stylesheet" href="{{ asset('css/shotplot.css') }}">
 
     <style>
+        @page {
+            margin: 0.35in;
+        }
+
         @media print {
             .no-print {
                 display: none;
             }
+
+            table,
+            tr {
+                page-break-inside: avoid;
+            }
         }
 
         body {
-            margin: 20px;
+            margin: 10px;
+            font-size: 12px;
         }
 
         h1, h2, h3 {
             margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .table td,
+        .table th {
+            padding: 3px;
         }
     </style>
 </head>

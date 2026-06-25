@@ -78,18 +78,6 @@ class PositionsController extends Controller
 
         return redirect()->action([self::class, 'index']);
     }
-    
-    public function matchSummary(ShootingMatch $match)
-    {
-        $match->load([
-            'rifle',
-            'firestrings' => function ($query) {
-                $query->orderBy('fire_string_number');
-            },
-        ]);
-
-        return view('matchsummary', compact('match'));
-    }
 
     public function myaccount()
     {
