@@ -81,6 +81,7 @@
                             <tr>
                                 <th>String</th>
                                 <th>Distance</th>
+                                <th>Score</th>
                                 <th>Wind</th>
                                 <th>Temp</th>
                                 <th>Sky</th>
@@ -92,6 +93,7 @@
                                 <tr>
                                     <td>{{ $firestring->fire_string_number }}</td>
                                     <td>{{ $firestring->distance }}</td>
+                                    <td><strong>{{ $firestring->formattedScore() }}</strong></td>
                                     <td>{{ $firestring->windspeed }} MPH at {{ $firestring->winddirection }}</td>
                                     <td>
                                         @if ($firestring->temperature)

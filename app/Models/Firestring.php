@@ -95,4 +95,40 @@ class Firestring extends Model
     {
         return $this->hasMany(FirestringAdjustment::class);
     }
+    public function totalScore()
+    {
+        $total = 0;
+
+        for ($i = 1; $i <= $this->shot_count; $i++) {
+            $value = strtoupper(trim((string) $this->{'shot'.$i.'value'}));
+
+            if ($value === 'X') {
+                $total += 10;
+            } elseif (is_numeric($value)) {
+                $total += (int) $value;
+            }
+        }
+
+        return $total;
+    }
+
+    public function xCount()
+    {
+        $count = 0;
+
+        for ($i = 1; $i <= $this->shot_count; $i++) {
+            $value = strtoupper(trim((string) $this->{'shot'.$i.'value'}));
+
+            if ($value === 'X') {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    public function formattedScore()
+    {
+        return $this->totalScore() . '-' . $this->xCount() . 'X';
+    }
 }

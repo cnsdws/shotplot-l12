@@ -52,9 +52,7 @@
             <tr><th>Wind Direction</th><td>{{ $firestring->winddirection }}</td></tr>
             <tr><th>Wind Speed</th><td>{{ $firestring->windspeed }}</td></tr>
             <tr><th>Light Direction</th><td>{{ $firestring->lightdirection }}</td></tr>
-            <tr>
-                <th>Temperature</th>
-                <td>
+            <tr><th>Temperature</th><td>
                     @if($firestring->temperature)
                         {{ $firestring->temperature }}°F
                     @endif
@@ -62,6 +60,7 @@
             </tr>
             <tr><th>Sky</th><td>{{ $firestring->sky_condition }}</td></tr>
             <tr><th>Notes</th><td>{{ $firestring->range_notes }}</td></tr>
+            <tr><th>Score</th><td><strong>{{ $firestring->formattedScore() }}</strong></td></tr>
         </table>
     </div>
 

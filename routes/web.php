@@ -20,6 +20,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/delete/{match}', [PositionsController::class, 'delete']);
     Route::post('/delete', [PositionsController::class, 'handleDelete']);
+                                 
+    Route::get('/match/{match}/summary', [PositionsController::class, 'matchSummary']);
 
     Route::get('/myaccount', [PositionsController::class, 'myaccount']);
     Route::post('/myaccount', [PositionsController::class, 'handleMyAccount']);

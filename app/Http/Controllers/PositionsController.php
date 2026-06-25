@@ -78,6 +78,18 @@ class PositionsController extends Controller
 
         return redirect()->action([self::class, 'index']);
     }
+    
+    public function matchSummary(ShootingMatch $match)
+    {
+        $match->load([
+            'rifle',
+            'firestrings' => function ($query) {
+                $query->orderBy('fire_string_number');
+            },
+        ]);
+
+        return view('matchsummary', compact('match'));
+    }
 
     public function myaccount()
     {
@@ -129,6 +141,9 @@ class PositionsController extends Controller
     {
         $firestring = Firestring::findOrFail($request->input('id'));
         $match_id = $firestring->match_id;
+        $request->merge([
+            'windspeed' => $request->input('windspeed') ?? 0,
+        ]);
 
         $fields = [
             'fire_string_number',
@@ -199,6 +214,9 @@ class PositionsController extends Controller
         ]);
 
         $match = ShootingMatch::findOrFail($request->input('match_id'));
+        $request->merge([
+            'windspeed' => $request->input('windspeed') ?? 0,
+        ]);
 
         $fields = [
             'fire_string_number',

@@ -45,7 +45,8 @@
                             <td>{{ $match->rangename }}</td>
 							<td><a href="/firestring/{{$match->id}}">Firestrings</a></td>
 							<td><a href="{{ url('/edit/'.$match->id) }}" class="btn btn-default">Edit</a>
-							<a href="{{ url('/delete/'.$match->id) }}"  class="btn btn-danger">Delete</a> </td>
+							<a href="{{ url('/delete/'.$match->id) }}"  class="btn btn-danger">Delete</a>
+                            <a href="/match/{{ $match->id }}/summary" class="btn btn-info">Summary</a></td>
 						</tr>
 						@endforeach
 					</tbody>

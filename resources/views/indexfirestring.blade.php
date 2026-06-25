@@ -31,6 +31,7 @@
 							<th>Firestring Number</th>
 							<th>Target Number</th>
 							<th>Distance</th>
+                            <th>Score</th>
 							<th>Relay</th>
 							<th>View</th>
 							<th>Actions</th>
@@ -44,6 +45,7 @@
 							<td>{{ $firestring->fire_string_number }}</td>
 							<td>{{ $firestring->target }}</td>
 							<td>{{ $firestring->distance }}</td>
+                            <td>Score</td><td><strong>{{ $firestring->formattedScore() }}</strong></td>
 							<td>{{ $firestring->relay }}</td>
 							<td><a href="/displayfirestring/{{$firestring->id}}">view details</a></td>
 							<td><a href="/editfirestring/{{$firestring->id}}" class="btn btn-default">Edit</a>
