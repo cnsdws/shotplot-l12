@@ -13,7 +13,9 @@
     <!-- Main page section for stock positions listing -->
     <br>
         <h3>Your Firestrings</h3>
-        <li><a href="/createfirestring/{{$match->id}}" class="navbar-brand">Create a New String</a></li>
+        <li><a href="/createfirestring/{{$match->id}}" class="btn btn-link">Create a New String</a>
+        <a href="/match/{{ $match->id }}/summary" class="btn btn-link">Match Summary</a>
+        </li>
         <br>
         @if (count($firestrings) == 0)
 				<br>
@@ -45,7 +47,7 @@
 							<td>{{ $firestring->fire_string_number }}</td>
 							<td>{{ $firestring->target }}</td>
 							<td>{{ $firestring->distance }}</td>
-                            <td>Score</td><td><strong>{{ $firestring->formattedScore() }}</strong></td>
+                            <td><strong>{{ $firestring->formattedScore() }}</strong></td>
 							<td>{{ $firestring->relay }}</td>
 							<td><a href="/displayfirestring/{{$firestring->id}}">view details</a></td>
 							<td><a href="/editfirestring/{{$firestring->id}}" class="btn btn-default">Edit</a>

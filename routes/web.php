@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RifleZeroController;
 use App\Http\Controllers\FirestringAdjustmentController;
+use App\Http\Controllers\ReportController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [PositionsController::class, 'index']);
@@ -69,6 +70,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/firestring-adjustments/{adjustment}/edit', [FirestringAdjustmentController::class, 'edit']);
     Route::post('/firestring-adjustments/{adjustment}', [FirestringAdjustmentController::class, 'update']);
     Route::post('/firestring-adjustments/{adjustment}/delete', [FirestringAdjustmentController::class, 'destroy']);
+                                 
+    Route::get('/displayfirestring/{id}/print', [ReportController::class, 'printFirestring']);
                                  
     
 });
