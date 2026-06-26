@@ -9,6 +9,7 @@ use App\Http\Controllers\RifleZeroController;
 use App\Http\Controllers\FirestringAdjustmentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AnalysisController;
+use App\Http\Controllers\BallisticProfileController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [PositionsController::class, 'index']);
@@ -74,7 +75,13 @@ Route::middleware('auth')->group(function () {
                                  
     Route::get('/displayfirestring/{id}/print', [ReportController::class, 'printFirestring']);
                                  
-    
+    Route::get('/ballistics', [BallisticProfileController::class, 'index']);
+    Route::get('/ballistics/create', [BallisticProfileController::class, 'create']);
+    Route::post('/ballistics', [BallisticProfileController::class, 'store']);
+    Route::get('/ballistics/{ballisticProfile}/edit', [BallisticProfileController::class, 'edit']);
+    Route::post('/ballistics/{ballisticProfile}', [BallisticProfileController::class, 'update']);
+    Route::post('/ballistics/{ballisticProfile}/delete', [BallisticProfileController::class, 'destroy']);
+                                 
 });
 
 Route::get('/logout', function () {

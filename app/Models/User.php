@@ -29,4 +29,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function ballisticProfiles()
+    {
+        return $this->hasMany(BallisticProfile::class);
+    }
 }
