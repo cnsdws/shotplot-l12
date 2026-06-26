@@ -37,6 +37,7 @@
                 <li><a href="{{ url('/') }}">Matches</a></li>
                 <li><a href="{{ url('/create') }}">Create Match</a></li>
                 <li><a href="{{ url('/rifles') }}">Rifles</a></li>
+                <li><a href="/ballistics">Ammo</a></li>
                 <li><a href="{{ url('/myaccount') }}">My Account</a></li>
               </ul>
             </div>
