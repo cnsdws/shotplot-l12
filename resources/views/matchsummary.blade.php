@@ -26,6 +26,7 @@
         <tr>
             <th>String</th>
             <th>Distance</th>
+            <th>Ammo</th>
             <th>Score</th>
             <th>Wind</th>
             <th>Actions</th>
@@ -47,8 +48,9 @@
             <tr>
                 <td>{{ $firestring->fire_string_number }}</td>
                 <td>{{ $firestring->distance }}</td>
+                <td>@if($firestring->ballisticProfile){{ $firestring->ballisticProfile->name }}@else — @endif </td>
                 <td><strong>{{ $firestring->formattedScore() }}</strong></td>
-                <td>{{ $firestring->windspeed }} {{ $firestring->winddirection }}</td>
+                <td>{{ $firestring->windspeed }}mph from {{ $firestring->winddirection }}</td>
                 <td>
                     <a href="/displayfirestring/{{ $firestring->id }}" class="btn btn-xs btn-default">View</a>
                     <a href="/displayfirestring/{{ $firestring->id }}/print" class="btn btn-xs btn-primary">Print</a>
@@ -57,9 +59,9 @@
         @endforeach
 
         <tr>
-            <th colspan="2">Match Total</th>
+            <th colspan="3">Match Total</th>
             <th>{{ $matchTotal }}-{{ $matchX }}X</th>
-            <th colspan="2"></th>
+            <th colspan="3"></th>
         </tr>
     </tbody>
 </table>

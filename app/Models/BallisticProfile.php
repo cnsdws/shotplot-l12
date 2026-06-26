@@ -71,4 +71,9 @@ class BallisticProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    public function firestrings()
+    {
+        return $this->hasMany(Firestring::class);
+    }
 }

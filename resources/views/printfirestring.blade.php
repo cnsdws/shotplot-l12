@@ -62,6 +62,7 @@
             <tr><th>Date</th><td>{{ optional($firestring->match)->date }}</td></tr>
             <tr><th>Firestring</th><td>{{ $firestring->fire_string_number }}</td></tr>
             <tr><th>Distance</th><td>{{ $firestring->distance }}</td></tr>
+            <tr><th>Ammo Profile</th><td>@if ($firestring->ballisticProfile){{ $firestring->ballisticProfile->name }}@else<span class="text-muted">None selected</span>@endif</td></tr>
             <tr><th>Target</th><td>{{ $firestring->target }}</td></tr>
             <tr><th>Elevation</th><td>{{ $firestring->elevation }}</td></tr>
             <tr><th>Windage</th><td>{{ $firestring->windage }}</td></tr>

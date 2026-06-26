@@ -31,11 +31,10 @@
 					<thead>
 						<tr>
 							<th>Firestring Number</th>
-							<th>Target Number</th>
 							<th>Distance</th>
+                            <th>Ammo Profile</th>
                             <th>Score</th>
-							<th>Relay</th>
-							<th>View</th>
+							<th></th>
 							<th>Actions</th>
 							
 						</tr>
@@ -45,10 +44,9 @@
 						@foreach($firestrings as $firestring)
 						<tr>
 							<td>{{ $firestring->fire_string_number }}</td>
-							<td>{{ $firestring->target }}</td>
 							<td>{{ $firestring->distance }}</td>
+                            <td>@if($firestring->ballisticProfile){{ $firestring->ballisticProfile->name }} @else <span class="text-muted">—</span> @endif </td>
                             <td><strong>{{ $firestring->formattedScore() }}</strong></td>
-							<td>{{ $firestring->relay }}</td>
 							<td><a href="/displayfirestring/{{$firestring->id}}">view details</a></td>
 							<td><a href="/editfirestring/{{$firestring->id}}" class="btn btn-default">Edit</a>
 							<a href="/deletefirestring/{{$firestring->id}}"  class="btn btn-danger">Delete</a> </td></td>

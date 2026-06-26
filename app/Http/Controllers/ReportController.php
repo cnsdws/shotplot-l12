@@ -11,6 +11,7 @@ class ReportController extends Controller
     {
         $firestring = Firestring::with([
             'match.rifle',
+            'ballisticProfile',
             'adjustments' => function ($query) {
                 $query->orderBy('shot_number');
             },

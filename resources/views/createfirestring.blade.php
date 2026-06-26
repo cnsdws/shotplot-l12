@@ -24,6 +24,40 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label>Ammo Profile</label>
+
+                <select name="ballistic_profile_id" class="form-control">
+
+                    <option value="">-- None selected --</option>
+
+                    <optgroup label="ShotPlot Library">
+
+                        @foreach($ballisticProfiles->where('is_system', true) as $profile)
+
+                            <option value="{{ $profile->id }}">
+                                {{ $profile->manufacturer }} - {{ $profile->name }}
+                            </option>
+
+                        @endforeach
+
+                    </optgroup>
+
+                    <optgroup label="My Profiles">
+
+                        @foreach($ballisticProfiles->where('is_system', false) as $profile)
+
+                            <option value="{{ $profile->id }}">
+                                {{ $profile->manufacturer }} - {{ $profile->name }}
+                            </option>
+
+                        @endforeach
+
+                    </optgroup>
+
+                </select>
+            </div>
+
             <div class="form-group"><label>Target Number</label><input type="text" name="target" class="form-control"></div>
             <div class="form-group"><label>Relay Number</label><input type="text" name="relay" class="form-control"></div>
 

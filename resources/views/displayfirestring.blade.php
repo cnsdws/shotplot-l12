@@ -21,6 +21,7 @@
                 <h4>Firestring #{{ $firestring->fire_string_number }}</h4>
                 <tr><td>Distance</td><td>{{ $firestring->distance }}</td></tr>
                 <tr><td>Score</td><td><strong>{{ $firestring->formattedScore() }}</strong></td></tr>
+                <tr><td>Ammo Profile</td><td>@if ($firestring->ballisticProfile){{$firestring->ballisticProfile->name }}@else<span class="text-muted">None selected</span>@endif</td></tr>
                 <tr><td>Target Number</td><td>{{ $firestring->target }}</td></tr>
                 <tr><td>Relay</td><td>{{ $firestring->relay }}</td></tr>
                 <tr><td>Light Direction</td><td>{{ $firestring->lightdirection }}</td></tr>

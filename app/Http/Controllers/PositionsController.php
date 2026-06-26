@@ -9,6 +9,7 @@ use App\Models\Rifle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\BallisticProfile;
 
 class PositionsController extends Controller
 {
@@ -122,7 +123,17 @@ class PositionsController extends Controller
     public function editFirestring($id)
     {
         $firestring = Firestring::with('match.rifle')->findOrFail($id);
-            return view('editfirestring', compact('firestring'));
+
+        $ballisticProfiles = BallisticProfile::where('active', true)
+            ->where(function ($query) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', auth()->id());
+            })
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->get();
+
+        return view('editfirestring', compact('firestring', 'ballisticProfiles'));
     }
 
     public function handleEditFirestring(Request $request, $id)
@@ -136,6 +147,7 @@ class PositionsController extends Controller
         $fields = [
             'fire_string_number',
             'distance',
+            'ballistic_profile_id',
             'target',
             'relay',
             'lightdirection',
@@ -177,7 +189,9 @@ class PositionsController extends Controller
     public function indexFirestring($id)
     {
         $match = ShootingMatch::findOrFail($id);
-        $firestrings = Firestring::where('match_id', $match->id)->get();
+        $firestrings = Firestring::with('ballisticProfile')
+            ->where('match_id', $match->id)
+            ->get();
 
         return view('indexfirestring', compact('match', 'firestrings'));
     }
@@ -189,8 +203,22 @@ class PositionsController extends Controller
         $zeros = $match->rifle
             ? $match->rifle->zeros->keyBy('distance')
             : collect();
+        
+        $ballisticProfiles = BallisticProfile::where('active', true)
+            ->where(function ($query) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', auth()->id());
+            })
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->get();
 
-        return view('createfirestring', compact('match_id', 'match', 'zeros'));
+        return view('createfirestring', compact(
+            'match_id',
+            'match',
+            'zeros',
+            'ballisticProfiles'
+        ));
     }
 
     public function handleCreateFirestring(Request $request)
@@ -209,6 +237,7 @@ class PositionsController extends Controller
         $fields = [
             'fire_string_number',
             'distance',
+            'ballistic_profile_id',
             'target',
             'relay',
             'lightdirection',
@@ -239,6 +268,7 @@ class PositionsController extends Controller
     {
         $firestring = Firestring::with([
             'match.rifle',
+            'ballisticProfile',
             'adjustments' => function ($query) {
                 $query->orderBy('shot_number');
             },

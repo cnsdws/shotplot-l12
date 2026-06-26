@@ -1,16 +1,16 @@
 @extends('_master')
 
 @section('title')
-<title>New Ballistic Profile</title>
+<title>New Ammo Profile</title>
 @stop
 
 @section('Index')
 
 <a href="/ballistics" class="btn btn-link">
-    Back to Ballistics Library
+    Back to Ammo Library
 </a>
 
-<h3>New Ballistic Profile</h3>
+<h3>New Ammo Profile</h3>
 
 <form method="POST" action="/ballistics">
     @csrf
@@ -20,7 +20,7 @@
     <br>
 
     <button class="btn btn-primary">
-        Save Ballistic Profile
+        Save Ammo Profile
     </button>
 
 </form>

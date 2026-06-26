@@ -1,24 +1,24 @@
 @extends('_master')
 
 @section('title')
-<title>Ballistics Library</title>
+<title>Ammo Library</title>
 @stop
 
 @section('Index')
 
 <a href="/" class="btn btn-link">Back to Matches</a>
 
-<h3>Ballistics Library</h3>
+<h3>Ammo Library</h3>
 
 <p>
     <a href="/ballistics/create" class="btn btn-primary">
-        New Ballistic Profile
+        New Ammo Profile
     </a>
 </p>
 
 @if ($profiles->isEmpty())
 
-    <p class="text-muted">No ballistic profiles found.</p>
+    <p class="text-muted">No Ammo profiles found.</p>
 
 @else
 
@@ -81,7 +81,7 @@
                               style="display:inline;">
                             @csrf
                             <button class="btn btn-xs btn-warning"
-                                    onclick="return confirm('Archive this ballistic profile?')">
+                                    onclick="return confirm('Archive this Ammo profile?')">
                                 Archive
                             </button>
                         </form>

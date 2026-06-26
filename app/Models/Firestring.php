@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ShootingMatch;
+use App\Models\BallisticProfile;
 
 class Firestring extends Model
 {
@@ -21,6 +22,7 @@ class Firestring extends Model
         'temperature',
         'sky_condition',
         'range_notes',
+        'ballistic_profile_id',
         'shot1value',
         'shot2value',
         'shot3value',
@@ -110,6 +112,11 @@ class Firestring extends Model
         }
 
         return $total;
+    }
+    
+    public function ballisticProfile()
+    {
+        return $this->belongsTo(BallisticProfile::class);
     }
 
     public function xCount()

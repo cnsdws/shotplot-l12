@@ -1,16 +1,16 @@
 @extends('_master')
 
 @section('title')
-<title>Edit Ballistic Profile</title>
+<title>Edit Ammo Profile</title>
 @stop
 
 @section('Index')
 
 <a href="/ballistics" class="btn btn-link">
-    Back to Ballistics Library
+    Back to Ammo Library
 </a>
 
-<h3>Edit Ballistic Profile</h3>
+<h3>Edit Ammo Profile</h3>
 
 <form method="POST"
       action="/ballistics/{{ $ballisticProfile->id }}">
@@ -21,7 +21,7 @@
     <br>
 
     <button class="btn btn-primary">
-        Update Ballistic Profile
+        Update Ammo Profile
     </button>
 
 </form>

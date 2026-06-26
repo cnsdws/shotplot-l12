@@ -19,6 +19,30 @@
 
             <div class="form-group"><label>Firestring Number</label><input class="form-control" type="text" name="fire_string_number" value="{{ $firestring->fire_string_number }}"></div>
             <div class="form-group"><label>Distance</label><input class="form-control" type="text" name="distance" value="{{ $firestring->distance }}"></div>
+            <div class="form-group">
+                <label>Ammo Profile</label>
+                <select name="ballistic_profile_id" class="form-control">
+                    <option value="">-- None selected --</option>
+
+                    <optgroup label="ShotPlot Library">
+                        @foreach($ballisticProfiles->where('is_system', true) as $profile)
+                            <option value="{{ $profile->id }}"
+                                {{ $firestring->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
+                                {{ $profile->name }}
+                            </option>
+                        @endforeach
+                    </optgroup>
+
+                    <optgroup label="My Profiles">
+                        @foreach($ballisticProfiles->where('is_system', false) as $profile)
+                            <option value="{{ $profile->id }}"
+                                {{ $firestring->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
+                                {{ $profile->name }}
+                            </option>
+                        @endforeach
+                    </optgroup>
+                </select>
+            </div>
             <div class="form-group"><label>Target Number</label><input class="form-control" type="text" name="target" value="{{ $firestring->target }}"></div>
             <div class="form-group"><label>Relay</label><input class="form-control" type="text" name="relay" value="{{ $firestring->relay }}"></div>
             <div class="form-group"><label>Light Direction</label><input class="form-control" type="text" name="lightdirection" value="{{ $firestring->lightdirection }}"></div>
@@ -75,7 +99,7 @@
             <button type="button" id="clearActiveShot" class="btn btn-warning">Clear Active Shot</button>
             <button type="button" id="clearAllShots" class="btn btn-danger">Clear All Shots</button>
             <input type="submit" value="Save" class="btn btn-primary">
-            <a href="/indexfirestring/{{ $firestring->match_id }}" class="btn btn-default">Cancel</a>
+            <a href="/indexfirestring/{{ $firestring->match_id }}" class="btn btn-link">Cancel</a>
         </div>
     </div>
 </form>
