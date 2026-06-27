@@ -76,4 +76,9 @@ class BallisticProfile extends Model
     {
         return $this->hasMany(Firestring::class);
     }
+    
+    public function rifleDefaultAmmos()
+    {
+        return $this->hasMany(RifleDefaultAmmo::class);
+    }
 }

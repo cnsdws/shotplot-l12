@@ -29,5 +29,10 @@ class Rifle extends Model
     {
         return $this->hasMany(RifleZero::class);
     }
+    
+    public function defaultAmmos()
+    {
+        return $this->hasMany(RifleDefaultAmmo::class);
+    }
 }
 

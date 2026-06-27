@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Rifle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\BallisticProfile;
+use App\Models\RifleDefaultAmmo;
+
 
 class RifleController extends Controller
 {
@@ -37,6 +40,21 @@ class RifleController extends Controller
         return redirect('/rifles');
     }
 
+    public function show(Rifle $rifle)
+    {
+        $zeros = $rifle->zeros()->orderBy('distance')->get();
+
+        $ballisticProfiles = $this->compatibleAmmoQuery($rifle)->get();
+
+        $defaultAmmos = $rifle->defaultAmmos->keyBy('distance');
+
+        return view('rifles.show', compact(
+            'rifle',
+            'zeros',
+            'ballisticProfiles',
+            'defaultAmmos'
+        ));
+    }
     public function edit(Rifle $rifle)
     {
         abort_unless($rifle->user_id === Auth::id(), 403);
@@ -76,7 +94,59 @@ class RifleController extends Controller
             ->with('firestrings')
             ->orderBy('date', 'desc')
             ->get();
+        
+        $ballisticProfiles = BallisticProfile::where('active', true)
+            ->where(function ($query) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', auth()->id());
+            })
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->get();
 
-        return view('rifles.history', compact('rifle', 'zeros', 'matches'));
+        $defaultAmmos = $rifle->defaultAmmos
+            ->keyBy('distance');
+
+        return view('rifles.history', compact(
+            'rifle',
+            'zeros',
+            'matches',
+            'ballisticProfiles',
+            'defaultAmmos'
+        ));
+    }
+    
+    public function updateDefaultAmmo(Request $request, Rifle $rifle)
+    {
+        foreach ($request->input('default_ammo', []) as $distance => $ballisticProfileId) {
+            RifleDefaultAmmo::updateOrCreate(
+                [
+                    'rifle_id' => $rifle->id,
+                    'distance' => $distance,
+                ],
+                [
+                    'ballistic_profile_id' => $ballisticProfileId ?: null,
+                ]
+            );
+        }
+
+        return redirect('/rifles/'.$rifle->id.'/history');
+    }
+
+    private function compatibleAmmoQuery($rifle)
+    {
+        return BallisticProfile::where('active', true)
+            ->where(function ($query) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', auth()->id());
+            })
+            ->when($rifle && in_array($rifle->caliber, ['.223', '5.56', '.223/5.56']), function ($query) {
+                $query->whereIn('caliber', ['.223', '5.56', '.223/5.56']);
+            })
+            ->when($rifle && ! in_array($rifle->caliber, ['.223', '5.56', '.223/5.56']), function ($query) use ($rifle) {
+                $query->where('caliber', $rifle->caliber);
+            })
+            ->orderBy('display_order')
+            ->orderBy('name');
     }
 }

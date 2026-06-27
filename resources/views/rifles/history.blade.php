@@ -23,40 +23,7 @@
     <tr><th>Notes</th><td>{{ $rifle->notes }}</td></tr>
 </table>
 
-<h4>Zero Book</h4>
 
-@if ($zeros->isEmpty())
-    <p class="text-muted">No zeroes recorded.</p>
-@else
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Distance</th>
-                <th>Elevation</th>
-                <th>Windage</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($zeros as $zero)
-                <tr>
-                    <td>{{ $zero->distance }}</td>
-                    <td>{{ $zero->elevation }}</td>
-                    <td>
-                        @if ($zero->windage > 0)
-                            {{ $zero->windage }}R
-                        @elseif ($zero->windage < 0)
-                            {{ abs($zero->windage) }}L
-                        @else
-                            0
-                        @endif
-                    </td>
-                    <td>{{ $zero->notes }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-@endif
 
 <h4>Recent Matches and Firestrings</h4>
 

@@ -29,7 +29,7 @@
     <tbody>
         @foreach ($rifles as $rifle)
         <tr>
-            <td>{{ $rifle->name }}</td>
+            <td><a href="/rifles/{{ $rifle->id }}">{{ $rifle->name }}</a></td>
             <td>{{ $rifle->caliber }}</td>
             <td>{{ $rifle->sight_type }}</td>
             <td>{{ $rifle->sight_click_moa }} MOA</td>
@@ -47,7 +47,7 @@
                             onclick="return confirm('Delete rifle?')">
                         Delete
                     </button>
-                    <a href="/rifles/{{ $rifle->id }}/zeros" class="btn btn-info">Zero Book</a>
+                    
                     <a href="/rifles/{{ $rifle->id }}/history" class="btn btn-default">History</a>
                 </form>
             </td>

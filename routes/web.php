@@ -53,9 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/rifles', [RifleController::class, 'index']);
     Route::get('/rifles/create', [RifleController::class, 'create']);
     Route::post('/rifles', [RifleController::class, 'store']);
+    Route::get('/rifles/{rifle}', [RifleController::class, 'show']);
     Route::get('/rifles/{rifle}/edit', [RifleController::class, 'edit']);
     Route::post('/rifles/{rifle}', [RifleController::class, 'update']);
     Route::post('/rifles/{rifle}/delete', [RifleController::class, 'destroy']);
+    Route::post('/rifles/{rifle}/default-ammo', [RifleController::class, 'updateDefaultAmmo']);
                                  
     Route::get('/rifles/{rifle}/zeros', [RifleZeroController::class, 'index']);
     Route::get('/rifles/{rifle}/zeros/create', [RifleZeroController::class, 'create']);

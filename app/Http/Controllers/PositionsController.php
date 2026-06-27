@@ -124,14 +124,7 @@ class PositionsController extends Controller
     {
         $firestring = Firestring::with('match.rifle')->findOrFail($id);
 
-        $ballisticProfiles = BallisticProfile::where('active', true)
-            ->where(function ($query) {
-                $query->whereNull('user_id')
-                      ->orWhere('user_id', auth()->id());
-            })
-            ->orderBy('display_order')
-            ->orderBy('name')
-            ->get();
+        $ballisticProfiles = $this->compatibleAmmoQuery(optional($firestring->match)->rifle)->get();
 
         return view('editfirestring', compact('firestring', 'ballisticProfiles'));
     }
@@ -204,20 +197,20 @@ class PositionsController extends Controller
             ? $match->rifle->zeros->keyBy('distance')
             : collect();
         
-        $ballisticProfiles = BallisticProfile::where('active', true)
-            ->where(function ($query) {
-                $query->whereNull('user_id')
-                      ->orWhere('user_id', auth()->id());
-            })
-            ->orderBy('display_order')
-            ->orderBy('name')
-            ->get();
+        $ballisticProfiles = $this->compatibleAmmoQuery($match->rifle)->get();
+        
+        $defaultAmmoMap = $match->rifle
+            ? $match->rifle
+                ->defaultAmmos()
+                ->pluck('ballistic_profile_id', 'distance')
+            : collect();
 
         return view('createfirestring', compact(
             'match_id',
             'match',
             'zeros',
-            'ballisticProfiles'
+            'ballisticProfiles',
+            'defaultAmmoMap'
         ));
     }
 
@@ -275,6 +268,23 @@ class PositionsController extends Controller
         ])->findOrFail($id);
 
         return view('displayfirestring', compact('firestring'));
+    }
+
+    private function compatibleAmmoQuery($rifle)
+    {
+        return BallisticProfile::where('active', true)
+            ->where(function ($query) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', auth()->id());
+            })
+            ->when($rifle && in_array($rifle->caliber, ['.223', '5.56', '.223/5.56']), function ($query) {
+                $query->whereIn('caliber', ['.223', '5.56', '.223/5.56']);
+            })
+            ->when($rifle && ! in_array($rifle->caliber, ['.223', '5.56', '.223/5.56']), function ($query) use ($rifle) {
+                $query->where('caliber', $rifle->caliber);
+            })
+            ->orderBy('display_order')
+            ->orderBy('name');
     }
     
 }

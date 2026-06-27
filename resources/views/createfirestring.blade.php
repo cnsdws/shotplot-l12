@@ -27,7 +27,7 @@
             <div class="form-group">
                 <label>Ammo Profile</label>
 
-                <select name="ballistic_profile_id" class="form-control">
+                    <select name="ballistic_profile_id" id="ballistic_profile_id" class="form-control">
 
                     <option value="">-- None selected --</option>
 
@@ -52,10 +52,14 @@
                             </option>
 
                         @endforeach
-
-                    </optgroup>
-
-                </select>
+                    </select>
+            </div>
+            </optgroup>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="useDefaultAmmo" checked>
+                    Use rifle default ammo
+                </label>
             </div>
 
             <div class="form-group"><label>Target Number</label><input type="text" name="target" class="form-control"></div>
@@ -156,10 +160,25 @@
     const elevationInput = document.querySelector('[name="elevation"]');
     const windageInput = document.querySelector('[name="windage"]');
     const activeShotSelect = document.getElementById('activeShot');
+    const ammoSelect = document.getElementById('ballistic_profile_id');
+    const useDefaultAmmo = document.getElementById('useDefaultAmmo');
+    const defaultAmmoMap = @json($defaultAmmoMap);
 
     let shotCount = getShotCount();
     let target = getTarget();
     const shots = {};
+
+    function applyDefaultAmmoForDistance() {
+        if (!useDefaultAmmo || !useDefaultAmmo.checked) {
+            return;
+        }
+
+        if (!ammoSelect) {
+            return;
+        }
+
+        ammoSelect.value = defaultAmmoMap[distanceSelect.value] || '';
+    }
 
     for (let i = 1; i <= 20; i++) {
         shots[i] = { x: null, y: null };
@@ -471,11 +490,13 @@
         shotCount = getShotCount();
         rebuildActiveShotOptions();
         applyZeroForDistance();
+        applyDefaultAmmoForDistance();
         redraw();
     });
 
     rebuildActiveShotOptions();
     applyZeroForDistance();
+    applyDefaultAmmoForDistance();
     redraw();
 })();
 </script>
