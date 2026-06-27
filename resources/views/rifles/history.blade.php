@@ -9,7 +9,6 @@
 <h3>{{ $rifle->name }} - Rifle History</h3>
 
 <p>
-    <a href="/rifles/{{ $rifle->id }}/zeros" class="btn btn-info">Zero Book</a>
     <a href="/rifles" class="btn btn-default">Back to Rifles</a>
 </p>
 

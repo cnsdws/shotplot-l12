@@ -5,7 +5,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RifleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RifleZeroController;
 use App\Http\Controllers\FirestringAdjustmentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AnalysisController;
@@ -57,15 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/rifles/{rifle}/edit', [RifleController::class, 'edit']);
     Route::post('/rifles/{rifle}', [RifleController::class, 'update']);
     Route::post('/rifles/{rifle}/delete', [RifleController::class, 'destroy']);
-    Route::post('/rifles/{rifle}/default-ammo', [RifleController::class, 'updateDefaultAmmo']);
     Route::post('/rifles/{rifle}/configuration', [RifleController::class, 'updateConfiguration']);
-                                 
-    Route::get('/rifles/{rifle}/zeros', [RifleZeroController::class, 'index']);
-    Route::get('/rifles/{rifle}/zeros/create', [RifleZeroController::class, 'create']);
-    Route::post('/rifles/{rifle}/zeros', [RifleZeroController::class, 'store']);
-    Route::get('/rifle-zeros/{zero}/edit', [RifleZeroController::class, 'edit']);
-    Route::post('/rifle-zeros/{zero}', [RifleZeroController::class, 'update']);
-    Route::post('/rifle-zeros/{zero}/delete', [RifleZeroController::class, 'destroy']);
                                  
     Route::get('/rifles/{rifle}/history', [RifleController::class, 'history']);
                                  
