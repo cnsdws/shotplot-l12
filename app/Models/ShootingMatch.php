@@ -25,7 +25,8 @@ class ShootingMatch extends Model
 
     public function firestrings()
     {
-        return $this->hasMany(Firestring::class, 'match_id');
+        return $this->hasMany(Firestring::class, 'match_id')
+            ->orderBy('fire_string_number');
     }
     public function rifle()
     {

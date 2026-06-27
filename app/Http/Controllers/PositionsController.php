@@ -6,10 +6,12 @@ use App\Models\Firestring;
 use App\Models\ShootingMatch;
 use App\Models\User;
 use App\Models\Rifle;
+use App\Models\BallisticProfile;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\BallisticProfile;
+
 
 class PositionsController extends Controller
 {
@@ -182,8 +184,9 @@ class PositionsController extends Controller
     public function indexFirestring($id)
     {
         $match = ShootingMatch::findOrFail($id);
-        $firestrings = Firestring::with('ballisticProfile')
-            ->where('match_id', $match->id)
+
+        $firestrings = $match->firestrings()
+            ->with('ballisticProfile')
             ->get();
 
         return view('indexfirestring', compact('match', 'firestrings'));
