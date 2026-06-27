@@ -133,6 +133,34 @@ class RifleController extends Controller
         return redirect('/rifles/'.$rifle->id.'/history');
     }
 
+    public function updateConfiguration(Request $request, Rifle $rifle)
+    {
+        foreach ($request->input('zeros', []) as $distance => $zeroData) {
+            $rifle->zeros()->updateOrCreate(
+                ['distance' => $distance],
+                [
+                    'elevation' => $zeroData['elevation'] ?? null,
+                    'windage' => $zeroData['windage'] ?? null,
+                    'notes' => $zeroData['notes'] ?? null,
+                ]
+            );
+        }
+
+        foreach ($request->input('default_ammo', []) as $distance => $ballisticProfileId) {
+            RifleDefaultAmmo::updateOrCreate(
+                [
+                    'rifle_id' => $rifle->id,
+                    'distance' => $distance,
+                ],
+                [
+                    'ballistic_profile_id' => $ballisticProfileId ?: null,
+                ]
+            );
+        }
+
+        return redirect('/rifles/'.$rifle->id);
+    }
+
     private function compatibleAmmoQuery($rifle)
     {
         return BallisticProfile::where('active', true)

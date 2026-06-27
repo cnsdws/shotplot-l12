@@ -26,62 +26,52 @@
     <tr><th>Notes</th><td>{{ $rifle->notes }}</td></tr>
 </table>
 
-<h4>Zero Book</h4>
+<h4>Stage Configuration</h4>
 
-@if ($zeros->isEmpty())
-    <p class="text-muted">No zeroes recorded.</p>
-@else
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Distance</th>
-                <th>Elevation</th>
-                <th>Windage</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($zeros as $zero)
-                <tr>
-                    <td>{{ $zero->distance }}</td>
-                    <td>{{ $zero->elevation }}</td>
-                    <td>
-                        @if ($zero->windage > 0)
-                            {{ $zero->windage }}R
-                        @elseif ($zero->windage < 0)
-                            {{ abs($zero->windage) }}L
-                        @else
-                            0
-                        @endif
-                    </td>
-                    <td>{{ $zero->notes }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-@endif
-
-<h4>Default Ammo</h4>
-
-<form method="POST" action="/rifles/{{ $rifle->id }}/default-ammo">
+<form method="POST" action="/rifles/{{ $rifle->id }}/configuration">
     @csrf
 
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>Distance</th>
+                <th>Stage</th>
+                <th>Elevation</th>
+                <th>Windage</th>
                 <th>Default Ammo</th>
+                <th>Notes</th>
             </tr>
         </thead>
+
         <tbody>
             @foreach ([
-                '200 Yard Slow Fire',
-                '200 Yard Rapid Fire',
-                '300 Yard Rapid Fire',
-                '600 Yard Slow Fire',
-            ] as $distance)
+                '200 Yard Slow Fire' => '200 SF',
+                '200 Yard Rapid Fire' => '200 RF',
+                '300 Yard Rapid Fire' => '300 RF',
+                '600 Yard Slow Fire' => '600 SF',
+            ] as $distance => $label)
+
+                @php
+                    $zero = $zeros->firstWhere('distance', $distance);
+                    $defaultAmmo = $defaultAmmos->get($distance);
+                @endphp
+
                 <tr>
-                    <td>{{ $distance }}</td>
+                    <td>{{ $label }}</td>
+
+                    <td>
+                        <input type="text"
+                               name="zeros[{{ $distance }}][elevation]"
+                               class="form-control"
+                               value="{{ optional($zero)->elevation }}">
+                    </td>
+
+                    <td>
+                        <input type="text"
+                               name="zeros[{{ $distance }}][windage]"
+                               class="form-control"
+                               value="{{ optional($zero)->windage }}">
+                    </td>
+
                     <td>
                         <select name="default_ammo[{{ $distance }}]" class="form-control">
                             <option value="">-- None selected --</option>
@@ -89,7 +79,7 @@
                             <optgroup label="ShotPlot Library">
                                 @foreach($ballisticProfiles->where('is_system', true) as $profile)
                                     <option value="{{ $profile->id }}"
-                                        {{ optional($defaultAmmos->get($distance))->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
+                                        {{ optional($defaultAmmo)->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
                                         {{ $profile->name }}
                                     </option>
                                 @endforeach
@@ -98,19 +88,26 @@
                             <optgroup label="My Ammo">
                                 @foreach($ballisticProfiles->where('is_system', false) as $profile)
                                     <option value="{{ $profile->id }}"
-                                        {{ optional($defaultAmmos->get($distance))->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
+                                        {{ optional($defaultAmmo)->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
                                         {{ $profile->name }}
                                     </option>
                                 @endforeach
                             </optgroup>
                         </select>
                     </td>
+
+                    <td>
+                        <input type="text"
+                               name="zeros[{{ $distance }}][notes]"
+                               class="form-control"
+                               value="{{ optional($zero)->notes }}">
+                    </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
-    <button class="btn btn-primary">Save Default Ammo</button>
+    <button class="btn btn-primary">Save Configuration</button>
 </form>
 
 @stop

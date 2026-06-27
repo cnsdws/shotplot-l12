@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/rifles/{rifle}', [RifleController::class, 'update']);
     Route::post('/rifles/{rifle}/delete', [RifleController::class, 'destroy']);
     Route::post('/rifles/{rifle}/default-ammo', [RifleController::class, 'updateDefaultAmmo']);
+    Route::post('/rifles/{rifle}/configuration', [RifleController::class, 'updateConfiguration']);
                                  
     Route::get('/rifles/{rifle}/zeros', [RifleZeroController::class, 'index']);
     Route::get('/rifles/{rifle}/zeros/create', [RifleZeroController::class, 'create']);
