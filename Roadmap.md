@@ -181,3 +181,5 @@ It combines:\
 - live tablet data collection\
 - printable reports\
 - cloud synchronization}
+
+TODO: Split firestring distance into discipline, course_of_fire/stage, actual distance value, and unit. Target should be derived from rules/range configuration, not manually selected.
