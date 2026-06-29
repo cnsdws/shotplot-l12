@@ -1,8 +1,7 @@
 @extends('_firestringmaster')
 
-@section('createfirestring')
 
-<h1>Create Firestring</h1>
+@section('createfirestring')
 
 <form action="{{ url('/createfirestring') }}" method="post" role="form">
     @csrf
@@ -10,9 +9,9 @@
 
     <div class="row">
         <div class="col-md-3">
-            <h3>String Info</h3>
+            <h3>Firestring Details</h3>
 
-            <div class="form-group"><label>Fire String Number</label><input type="text" name="fire_string_number" class="form-control" value="{{ old('fire_string_number') }}"></div>
+            <div class="form-group"><label>Fire String #</label><input type="text" name="fire_string_number" class="form-control" value="{{ old('fire_string_number') }}"></div>
 
             <div class="form-group">
                 <label>Distance</label>
@@ -24,46 +23,13 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>Ammo Profile</label>
+            @include('firestrings._ammo_select')
 
-                    <select name="ballistic_profile_id" id="ballistic_profile_id" class="form-control">
+            <div class="form-group"><label>Elevation</label><input type="text" name="elevation" class="form-control"></div>
+            <div class="form-group"><label>Windage</label><input type="text" name="windage" class="form-control"></div>
 
-                    <option value="">-- None selected --</option>
-
-                    <optgroup label="ShotPlot Library">
-
-                        @foreach($ballisticProfiles->where('is_system', true) as $profile)
-
-                            <option value="{{ $profile->id }}">
-                                {{ $profile->manufacturer }} - {{ $profile->name }}
-                            </option>
-
-                        @endforeach
-
-                    </optgroup>
-
-                    <optgroup label="My Profiles">
-
-                        @foreach($ballisticProfiles->where('is_system', false) as $profile)
-
-                            <option value="{{ $profile->id }}">
-                                {{ $profile->manufacturer }} - {{ $profile->name }}
-                            </option>
-
-                        @endforeach
-                    </select>
-            </div>
-            </optgroup>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="useDefaultAmmo" checked>
-                    Use rifle default ammo
-                </label>
-            </div>
-
-            <div class="form-group"><label>Target Number</label><input type="text" name="target" class="form-control"></div>
-            <div class="form-group"><label>Relay Number</label><input type="text" name="relay" class="form-control"></div>
+            <div class="form-group"><label>Target #</label><input type="text" name="target" class="form-control"></div>
+            <div class="form-group"><label>Relay #</label><input type="text" name="relay" class="form-control"></div>
 
             <div class="form-group">
                 <label>Light Direction</label>
@@ -83,24 +49,14 @@
                 </select>
             </div>
 
-            <div class="form-group"><label>Wind Speed MPH</label><input type="text" name="windspeed" class="form-control"></div>
-            <div class="form-group">
-                <label>Temperature</label>
-                <input type="number" name="temperature" class="form-control">
-            </div>
-
-            <div class="form-group">
-                <label>Sky Condition</label>
-                <input type="text" name="sky_condition" class="form-control">
-            </div>
+            <div class="form-group"><label>Wind Speed (mph)</label><input type="text" name="windspeed" class="form-control"></div>
 
             <div class="form-group">
                 <label>Range Notes</label>
                 <textarea name="range_notes" class="form-control" rows="3"></textarea>
             </div>
 
-            <div class="form-group"><label>Rifle Elevation</label><input type="text" name="elevation" class="form-control"></div>
-            <div class="form-group"><label>Rifle Windage</label><input type="text" name="windage" class="form-control"></div>
+            
         </div>
 
         <div class="col-md-3">
@@ -428,6 +384,11 @@
         }
     }
 
+    function applyStageConfiguration() {
+        applyZeroForDistance();
+        applyDefaultAmmoForDistance();
+    }
+
     function redraw() {
         target = getTarget();
         shotCount = getShotCount();
@@ -489,16 +450,14 @@
     distanceSelect.addEventListener('change', function () {
         shotCount = getShotCount();
         rebuildActiveShotOptions();
-        applyZeroForDistance();
-        applyDefaultAmmoForDistance();
+        applyStageConfiguration();
         redraw();
     });
 
     rebuildActiveShotOptions();
-    applyZeroForDistance();
-    applyDefaultAmmoForDistance();
+    applyStageConfiguration();
     redraw();
-})();
+    })();
 </script>
 
 @stop

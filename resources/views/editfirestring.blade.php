@@ -7,7 +7,7 @@
 @section('editfirestring')
 
 <br><br>
-<h3>Edit a String of Fire</h3>
+<h3>Firestring Details</h3>
 
 <form action="{{ url('/editfirestring/'.$firestring->id) }}" method="post" role="form">
     @csrf
@@ -15,44 +15,18 @@
 
     <div class="row">
         <div class="col-md-3">
-            <h4>String Info</h4>
-
-            <div class="form-group"><label>Firestring Number</label><input class="form-control" type="text" name="fire_string_number" value="{{ $firestring->fire_string_number }}"></div>
+           <div class="form-group"><label>String #</label><input class="form-control" type="text" name="fire_string_number" value="{{ $firestring->fire_string_number }}"></div>
             <div class="form-group"><label>Distance</label><input class="form-control" type="text" name="distance" value="{{ $firestring->distance }}"></div>
-            <div class="form-group">
-                <label>Ammo Profile</label>
-                <select name="ballistic_profile_id" class="form-control">
-                    <option value="">-- None selected --</option>
 
-                    <optgroup label="ShotPlot Library">
-                        @foreach($ballisticProfiles->where('is_system', true) as $profile)
-                            <option value="{{ $profile->id }}"
-                                {{ $firestring->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
-                                {{ $profile->name }}
-                            </option>
-                        @endforeach
-                    </optgroup>
-
-                    <optgroup label="My Profiles">
-                        @foreach($ballisticProfiles->where('is_system', false) as $profile)
-                            <option value="{{ $profile->id }}"
-                                {{ $firestring->ballistic_profile_id == $profile->id ? 'selected' : '' }}>
-                                {{ $profile->name }}
-                            </option>
-                        @endforeach
-                    </optgroup>
-                </select>
-            </div>
-            <div class="form-group"><label>Target Number</label><input class="form-control" type="text" name="target" value="{{ $firestring->target }}"></div>
-            <div class="form-group"><label>Relay</label><input class="form-control" type="text" name="relay" value="{{ $firestring->relay }}"></div>
+            @include('firestrings._ammo_select')
+            <div class="form-group"><label>Elevation</label><input class="form-control" type="text" name="elevation" value="{{ $firestring->elevation }}"></div>
+            <div class="form-group"><label>Windage</label><input class="form-control" type="text" name="windage" value="{{ $firestring->windage }}"></div>
+            <div class="form-group"><label>Target #</label><input class="form-control" type="text" name="target" value="{{ $firestring->target }}"></div>
+            <div class="form-group"><label>Relay #</label><input class="form-control" type="text" name="relay" value="{{ $firestring->relay }}"></div>
             <div class="form-group"><label>Light Direction</label><input class="form-control" type="text" name="lightdirection" value="{{ $firestring->lightdirection }}"></div>
             <div class="form-group"><label>Wind Direction</label><input class="form-control" type="text" name="winddirection" value="{{ $firestring->winddirection }}"></div>
             <div class="form-group"><label>Wind Speed</label><input class="form-control" type="text" name="windspeed" value="{{ $firestring->windspeed }}"></div>
-            <div class="form-group"><label>Temperature</label><input class="form-control" type="number" name="temperature" value="{{ $firestring->temperature }}"></div>
-            <div class="form-group"><label>Sky Condition</label><input class="form-control" type="text" name="sky_condition" value="{{ $firestring->sky_condition }}"></div>
             <div class="form-group"><label>Range Notes</label><textarea class="form-control" name="range_notes" rows="3">{{ $firestring->range_notes }}</textarea></div>
-            <div class="form-group"><label>Elevation</label><input class="form-control" type="text" name="elevation" value="{{ $firestring->elevation }}"></div>
-            <div class="form-group"><label>Windage</label><input class="form-control" type="text" name="windage" value="{{ $firestring->windage }}"></div>
         </div>
 
         <div class="col-md-3">
