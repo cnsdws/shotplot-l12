@@ -22,31 +22,26 @@
             <div class="form-group"><label>Windage</label><input class="form-control" type="text" name="windage" value="{{ $firestring->windage }}"></div>
             <div class="form-group"><label>Target #</label><input class="form-control" type="text" name="target" value="{{ $firestring->target }}"></div>
             <div class="form-group"><label>Relay #</label><input class="form-control" type="text" name="relay" value="{{ $firestring->relay }}"></div>
-            <div class="form-group"><label>Light Direction</label><input class="form-control" type="text" name="lightdirection" value="{{ $firestring->lightdirection }}"></div>
             
-            <div class="form-group"><label>Wind Direction</label><input type="hidden" name="winddirection" id="winddirection" value="{{old('winddirection', optional($firestring ??null)->winddirection) }}">
-                <div class="btn-group" id="windDirectionButtons">
-                    <button type="button" class="btn btn-default" data-dir="9 O'clock">9</button>
-                    <button type="button" class="btn btn-default" data-dir="10 O'clock">10</button>
-                    <button type="button" class="btn btn-default" data-dir="11 O'clock">11</button>
-                    <button type="button" class="btn btn-default" data-dir="12 O'clock">12</button>
-                    <button type="button" class="btn btn-default" data-dir="1 O'clock">1</button>
-                    <button type="button" class="btn btn-default" data-dir="2 O'clock">2</button>
-                    <button type="button" class="btn btn-default" data-dir="3 O'clock">3</button>
-                </div>
-            </div>
-            <div class="form-group"><label>Wind Speed</label><input type="hidden" name="windspeed" id="windspeed" value="{{ old('windspeed', optional($firestring ?? null)->windspeed) }}">
-                <div class="btn-group" id="windSpeedButtons">
-                    <button type="button" class="btn btn-default" data-speed="0">0</button>
-                    <button type="button" class="btn btn-default" data-speed="5">5</button>
-                    <button type="button" class="btn btn-default" data-speed="10">10</button>
-                    <button type="button" class="btn btn-default" data-speed="15">15</button>
-                    <button type="button" class="btn btn-default" data-speed="20">20</button>
-                    <button type="button" class="btn btn-default" data-speed="25">25</button>
-                </div>
+            @include('firestrings._direction_selector', [
+                'label' => 'Light Direction',
+                'field' => 'lightdirection',
+                'value' => old('lightdirection', optional($firestring ?? null)->lightdirection)
+            ])
+
+            @include('firestrings._direction_selector', [
+                'label' => 'Wind Direction',
+                'field' => 'winddirection',
+                'value' => old('winddirection', optional($firestring ?? null)->winddirection)
+            ])
+
+            @include('firestrings._wind_speed_selector', [
+                'value' => old('windspeed', optional($firestring ?? null)->windspeed)
+            ])
+
             <div class="form-group"><label>Range Notes</label><textarea class="form-control" name="range_notes" rows="3">{{ $firestring->range_notes }}</textarea></div>
             </div>
-</div>
+       
         <div class="col-md-3">
             <h3>Shots</h3>
 
@@ -390,45 +385,52 @@
         redraw();
     });
 
-    document.querySelectorAll('#windSpeedButtons button').forEach(function (button) {
+    
+    document.querySelectorAll('[id$="Buttons"]').forEach(function(group) {
 
-        button.addEventListener('click', function () {
+        group.querySelectorAll('button').forEach(function(button) {
 
-            document.getElementById('windspeed').value =
-                this.dataset.speed;
+            button.addEventListener('click', function() {
 
-            document.querySelectorAll('#windSpeedButtons button')
-                .forEach(b => b.classList.remove('btn-primary'));
+                const field = group.id.replace('Buttons', '');
 
-            document.querySelectorAll('#windSpeedButtons button')
-                .forEach(b => b.classList.add('btn-default'));
+                document.getElementById(field).value =
+                    this.dataset.value;
 
-            this.classList.remove('btn-default');
-            this.classList.add('btn-primary');
+                group.querySelectorAll('button')
+                    .forEach(b => {
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-default');
+                    });
 
-        });
-
-    });
-
-    document.querySelectorAll('#windDirectionButtons button').forEach(function (button) {
-
-        button.addEventListener('click', function () {
-
-            document.querySelector('[name="winddirection"]').value =
-                this.dataset.dir;
-
-            document.querySelectorAll('#windDirectionButtons button')
-                .forEach(b => b.classList.remove('btn-primary'));
-
-            document.querySelectorAll('#windDirectionButtons button')
-                .forEach(b => b.classList.add('btn-default'));
-
-            this.classList.remove('btn-default');
-            this.classList.add('btn-primary');
+                this.classList.remove('btn-default');
+                this.classList.add('btn-primary');
+            });
 
         });
 
     });
+
+    function initializeButtonGroup(groupSelector, fieldSelector, dataAttribute) {
+        const field = document.querySelector(fieldSelector);
+
+        if (!field || !field.value) {
+            return;
+        }
+
+        document.querySelectorAll(groupSelector + ' button').forEach(function (button) {
+            const buttonValue = button.dataset[dataAttribute];
+
+            if (buttonValue == field.value) {
+                button.classList.remove('btn-default');
+                button.classList.add('btn-primary');
+            }
+        });
+    }
+
+    initializeButtonGroup('#windspeedButtons', '#windspeed', 'value');
+    initializeButtonGroup('#winddirectionButtons', '#winddirection', 'value');
+    initializeButtonGroup('#lightdirectionButtons', '#lightdirection', 'value');
 
     redraw();
     })();
