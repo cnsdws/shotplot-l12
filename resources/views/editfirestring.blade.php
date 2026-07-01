@@ -6,15 +6,14 @@
 
 @section('editfirestring')
 
-<br><br>
-<h3>Firestring Details</h3>
+
 
 <form action="{{ url('/editfirestring/'.$firestring->id) }}" method="post" role="form">
     @csrf
     <input type="hidden" name="id" value="{{ $firestring->id }}">
 
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3"> <h3>Firestring Details</h3>
            <div class="form-group"><label>String #</label><input class="form-control" type="text" name="fire_string_number" value="{{ $firestring->fire_string_number }}"></div>
             <div class="form-group"><label>Distance</label><input class="form-control" type="text" name="distance" value="{{ $firestring->distance }}"></div>
 
@@ -24,13 +23,32 @@
             <div class="form-group"><label>Target #</label><input class="form-control" type="text" name="target" value="{{ $firestring->target }}"></div>
             <div class="form-group"><label>Relay #</label><input class="form-control" type="text" name="relay" value="{{ $firestring->relay }}"></div>
             <div class="form-group"><label>Light Direction</label><input class="form-control" type="text" name="lightdirection" value="{{ $firestring->lightdirection }}"></div>
-            <div class="form-group"><label>Wind Direction</label><input class="form-control" type="text" name="winddirection" value="{{ $firestring->winddirection }}"></div>
-            <div class="form-group"><label>Wind Speed</label><input class="form-control" type="text" name="windspeed" value="{{ $firestring->windspeed }}"></div>
+            
+            <div class="form-group"><label>Wind Direction</label><input type="hidden" name="winddirection" id="winddirection" value="{{old('winddirection', optional($firestring ??null)->winddirection) }}">
+                <div class="btn-group" id="windDirectionButtons">
+                    <button type="button" class="btn btn-default" data-dir="9 O'clock">9</button>
+                    <button type="button" class="btn btn-default" data-dir="10 O'clock">10</button>
+                    <button type="button" class="btn btn-default" data-dir="11 O'clock">11</button>
+                    <button type="button" class="btn btn-default" data-dir="12 O'clock">12</button>
+                    <button type="button" class="btn btn-default" data-dir="1 O'clock">1</button>
+                    <button type="button" class="btn btn-default" data-dir="2 O'clock">2</button>
+                    <button type="button" class="btn btn-default" data-dir="3 O'clock">3</button>
+                </div>
+            </div>
+            <div class="form-group"><label>Wind Speed</label><input type="hidden" name="windspeed" id="windspeed" value="{{ old('windspeed', optional($firestring ?? null)->windspeed) }}">
+                <div class="btn-group" id="windSpeedButtons">
+                    <button type="button" class="btn btn-default" data-speed="0">0</button>
+                    <button type="button" class="btn btn-default" data-speed="5">5</button>
+                    <button type="button" class="btn btn-default" data-speed="10">10</button>
+                    <button type="button" class="btn btn-default" data-speed="15">15</button>
+                    <button type="button" class="btn btn-default" data-speed="20">20</button>
+                    <button type="button" class="btn btn-default" data-speed="25">25</button>
+                </div>
             <div class="form-group"><label>Range Notes</label><textarea class="form-control" name="range_notes" rows="3">{{ $firestring->range_notes }}</textarea></div>
-        </div>
-
+            </div>
+</div>
         <div class="col-md-3">
-            <h4>Shots</h4>
+            <h3>Shots</h3>
 
             @for ($i = 1; $i <= $firestring->shot_count; $i++)
                 <div class="form-group">
@@ -44,7 +62,7 @@
         </div>
 
         <div class="col-md-6">
-            <h4>Plot Shots</h4>
+            <h3>Plot Shots</h3>
             <p class="text-muted">Select a shot number, then click the target to place it.</p>
 
             <div class="form-group">
@@ -372,8 +390,48 @@
         redraw();
     });
 
+    document.querySelectorAll('#windSpeedButtons button').forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            document.getElementById('windspeed').value =
+                this.dataset.speed;
+
+            document.querySelectorAll('#windSpeedButtons button')
+                .forEach(b => b.classList.remove('btn-primary'));
+
+            document.querySelectorAll('#windSpeedButtons button')
+                .forEach(b => b.classList.add('btn-default'));
+
+            this.classList.remove('btn-default');
+            this.classList.add('btn-primary');
+
+        });
+
+    });
+
+    document.querySelectorAll('#windDirectionButtons button').forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            document.querySelector('[name="winddirection"]').value =
+                this.dataset.dir;
+
+            document.querySelectorAll('#windDirectionButtons button')
+                .forEach(b => b.classList.remove('btn-primary'));
+
+            document.querySelectorAll('#windDirectionButtons button')
+                .forEach(b => b.classList.add('btn-default'));
+
+            this.classList.remove('btn-default');
+            this.classList.add('btn-primary');
+
+        });
+
+    });
+
     redraw();
-})();
+    })();
 </script>
 
 @stop

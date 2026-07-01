@@ -42,14 +42,29 @@
 
             <div class="form-group">
                 <label>Wind Direction</label>
-                <select name="winddirection" class="form-control"style="max-width:120px;">
-                    <option>1 O'clock</option><option>2 O'clock</option><option>3 O'clock</option><option>4 O'clock</option>
-                    <option>5 O'clock</option><option>6 O'clock</option><option>7 O'clock</option><option>8 O'clock</option>
-                    <option>9 O'clock</option><option>10 O'clock</option><option>11 O'clock</option><option>12 O'clock</option>
-                </select>
+                    <input type="hidden" name="winddirection" id="winddirection" value="{{old('winddirection', optional($firestring ??null)->winddirection) }}">
+                    <div id="windDirectionButtons" class="btn-group">
+                        <button type="button" class="btn btn-default" data-dir="9 O'clock">9</button>
+                        <button type="button" class="btn btn-default" data-dir="10 O'clock">10</button>
+                        <button type="button" class="btn btn-default" data-dir="11 O'clock">11</button>
+                        <button type="button" class="btn btn-default" data-dir="12 O'clock">12</button>
+                        <button type="button" class="btn btn-default" data-dir="1 O'clock">1</button>
+                        <button type="button" class="btn btn-default" data-dir="2 O'clock">2</button>
+                        <button type="button" class="btn btn-default" data-dir="3 O'clock">3</button>
+                    </div>
+                
             </div>
 
             <div class="form-group"><label>Wind Speed (mph)</label><input type="text" name="windspeed" class="form-control"style="max-width:120px;"></div>
+
+            <div class="btn-group" id="windSpeedButtons">
+                <button type="button" class="btn btn-default" data-speed="0">0</button>
+                <button type="button" class="btn btn-default" data-speed="5">5</button>
+                <button type="button" class="btn btn-default" data-speed="10">10</button>
+                <button type="button" class="btn btn-default" data-speed="15">15</button>
+                <button type="button" class="btn btn-default" data-speed="20">20</button>
+                <button type="button" class="btn btn-default" data-speed="25">25</button>
+            </div>
 
             <div class="form-group">
                 <label>Range Notes</label>
@@ -458,6 +473,45 @@
     applyStageConfiguration();
     redraw();
     })();
+
+    document.querySelectorAll('#windSpeedButtons button').forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            document.querySelector('[name="windspeed"]').value =
+                this.dataset.speed;
+
+            document.querySelectorAll('#windSpeedButtons button')
+                .forEach(b => b.classList.remove('btn-primary'));
+
+            document.querySelectorAll('#windSpeedButtons button')
+                .forEach(b => b.classList.add('btn-default'));
+
+            this.classList.remove('btn-default');
+            this.classList.add('btn-primary');
+
+        });
+
+    });
+    document.querySelectorAll('#windDirectionButtons button').forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            document.querySelector('[name="winddirection"]').value =
+                this.dataset.speed;
+
+            document.querySelectorAll('#windDirectionButtons button')
+                .forEach(b => b.classList.remove('btn-primary'));
+
+            document.querySelectorAll('#windDirectionButtons button')
+                .forEach(b => b.classList.add('btn-default'));
+
+            this.classList.remove('btn-default');
+            this.classList.add('btn-primary');
+
+        });
+
+    });
 </script>
 
 @stop
