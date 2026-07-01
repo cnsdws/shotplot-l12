@@ -41,6 +41,12 @@
 					</thead>
 
 					<tbody>
+                        
+                        @php
+                            $matchTotal = 0;
+                            $matchX = 0;
+                        @endphp
+
 						@foreach($firestrings as $firestring)
 						<tr>
 							<td>{{ $firestring->fire_string_number }}</td>
@@ -50,10 +56,17 @@
 							<td><a href="/displayfirestring/{{$firestring->id}}">view details</a></td>
 							<td><a href="/editfirestring/{{$firestring->id}}" class="btn btn-default">Edit</a>
 							<a href="/deletefirestring/{{$firestring->id}}"  class="btn btn-danger">Delete</a> </td></td>
+                            @php
+                                $matchTotal += $firestring->totalScore();
+                                $matchX += $firestring->xCount();
+                            @endphp
 						</tr>
-						
 						@endforeach
-
+                        <tr>
+                            <th colspan="3">Match Total</th>
+                            <th>{{ $matchTotal }}-{{ $matchX }}X</th>
+                            <th colspan="2"></th>
+                        </tr>
 					</tbody>
 				</table>
 			@endif

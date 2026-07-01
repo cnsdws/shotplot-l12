@@ -12,7 +12,8 @@ class AnalysisController extends Controller
         $match->load([
             'rifle',
             'firestrings' => function ($query) {
-                $query->orderBy('fire_string_number');
+                $query->with('ballisticProfile')
+                    ->orderBy('fire_string_number');
             },
         ]);
 

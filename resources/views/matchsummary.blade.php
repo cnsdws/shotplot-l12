@@ -61,7 +61,7 @@
         <tr>
             <th colspan="3">Match Total</th>
             <th>{{ $matchTotal }}-{{ $matchX }}X</th>
-            <th colspan="3"></th>
+            <th colspan="2"></th>
         </tr>
     </tbody>
 </table>

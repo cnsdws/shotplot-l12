@@ -269,8 +269,22 @@ class PositionsController extends Controller
                 $query->orderBy('shot_number');
             },
         ])->findOrFail($id);
+        
+        $previousFirestring = Firestring::where('match_id', $firestring->match_id)
+            ->where('fire_string_number', '<', $firestring->fire_string_number)
+            ->orderByDesc('fire_string_number')
+            ->first();
 
-        return view('displayfirestring', compact('firestring'));
+        $nextFirestring = Firestring::where('match_id', $firestring->match_id)
+            ->where('fire_string_number', '>', $firestring->fire_string_number)
+            ->orderBy('fire_string_number')
+            ->first();
+
+        return view('displayfirestring', compact(
+            'firestring',
+            'previousFirestring',
+            'nextFirestring'
+        ));
     }
 
     private function compatibleAmmoQuery($rifle)

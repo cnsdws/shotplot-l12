@@ -1,34 +1,41 @@
 @extends('_firestringmaster')
 
 @section('title')
-<title>Display Firestring</title>
+<h3>{{ $firestring->distance }}</h3>
 @stop
 
 @section('editfirestring')
 <br>
-<li><a href="/indexfirestring/{{ $firestring->match_id }}" class="navbar-brand">Back to Firestrings</a></li>
-    <a href="/firestrings/{{ $firestring->id }}/adjustments" class="btn btn-info">Adjustment Log</a>
-    <a href="/displayfirestring/{{ $firestring->id }}/print" class="btn btn-success"> Print Report </a>
+<p>
+    <a href="/indexfirestring/{{ $firestring->match_id }}" class="btn btn-link">
+        Back to Firestrings
+    </a>
 
-<br><br>
+    <a href="/firestrings/{{ $firestring->id }}/adjustments" class="btn btn-info">
+        Adjustment Log
+    </a>
 
-<h3>Display a String of Fire</h3>
+    <a href="/displayfirestring/{{ $firestring->id }}/print" class="btn btn-success">
+        Print Report
+    </a>
+</p>
+<br>
+
+<h3>{{ $firestring->distance }}</h3>
 
 <div class="row">
     <div class="col-md-4">
         <table class="table table-striped">
             <tbody>
-                <h4>Firestring #{{ $firestring->fire_string_number }}</h4>
+                <h4>String #{{ $firestring->fire_string_number }}</h4>
                 <tr><td>Distance</td><td>{{ $firestring->distance }}</td></tr>
                 <tr><td>Score</td><td><strong>{{ $firestring->formattedScore() }}</strong></td></tr>
-                <tr><td>Ammo Profile</td><td>@if ($firestring->ballisticProfile){{$firestring->ballisticProfile->name }}@else<span class="text-muted">None selected</span>@endif</td></tr>
-                <tr><td>Target Number</td><td>{{ $firestring->target }}</td></tr>
-                <tr><td>Relay</td><td>{{ $firestring->relay }}</td></tr>
+                <tr><td>Ammo</td><td>@if ($firestring->ballisticProfile){{$firestring->ballisticProfile->name }}@else<span class="text-muted">None selected</span>@endif</td></tr>
+                <tr><td>Target #</td><td>{{ $firestring->target }}</td></tr>
+                <tr><td>Relay #</td><td>{{ $firestring->relay }}</td></tr>
                 <tr><td>Light Direction</td><td>{{ $firestring->lightdirection }}</td></tr>
                 <tr><td>Wind Direction</td><td>{{ $firestring->winddirection }}</td></tr>
-                <tr><td>Wind Speed</td><td>{{ $firestring->windspeed }}</td></tr>
-                <tr><td>Temperature</td><td>{{ $firestring->temperature }}</td></tr>
-                <tr><td>Sky Condition</td><td>{{ $firestring->sky_condition }}</td></tr>
+                <tr><td>Wind Speed</td><td>{{ $firestring->windspeed }} mph</td></tr>
                 <tr><td>Notes</td><td>{{ $firestring->range_notes }}</td></tr>
                 <tr><td>Elevation</td><td>{{ $firestring->elevation }}</td></tr>
                 <tr><td>Windage</td><td>{{ $firestring->windage }}</td></tr>
@@ -103,6 +110,21 @@
 
     <div class="col-md-6">
         <h4>Shot Plot</h4>
+        <div class="clearfix" style="margin-bottom:15px;">
+            @if($previousFirestring)
+                <a href="/displayfirestring/{{ $previousFirestring->id }}"
+                   class="btn btn-default pull-left">
+                    &laquo; String #{{ $previousFirestring->fire_string_number }}
+                </a>
+            @endif
+
+            @if($nextFirestring)
+                <a href="/displayfirestring/{{ $nextFirestring->id }}"
+                   class="btn btn-default pull-right">
+                    String #{{ $nextFirestring->fire_string_number }} &raquo;
+                </a>
+            @endif
+        </div>
         <canvas id="targetCanvas" width="550" height="550" style="border:1px solid #ccc; max-width:100%;"></canvas>
         
         <hr>
