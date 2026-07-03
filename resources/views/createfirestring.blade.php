@@ -25,8 +25,19 @@
 
             @include('firestrings._ammo_select')
 
-            <div class="form-group"><label>Elevation</label><input type="text" name="elevation" class="form-control"style="max-width:120px;"></div>
-            <div class="form-group"><label>Windage</label><input type="text" name="windage" class="form-control"style="max-width:120px;"></div>
+            @include('firestrings._click_input', [
+                'label' => 'Elevation',
+                'field' => 'elevation',
+                'value' => old('elevation'),
+                'step' => optional(optional($match)->rifle)->sight_click_moa ?? 0.25
+            ])
+
+            @include('firestrings._click_input', [
+                'label' => 'Windage',
+                'field' => 'windage',
+                'value' => old('windage'),
+                'step' => optional(optional($match)->rifle)->sight_click_moa ?? 0.25
+            ])
 
             <div class="form-group"><label>Target #</label><input type="text" name="target" class="form-control"style="max-width:120px;"></div>
             <div class="form-group"><label>Relay #</label><input type="text" name="relay" class="form-control"style="max-width:120px;"></div>
@@ -457,7 +468,6 @@
         applyStageConfiguration();
         redraw();
     });
-
     
     document.querySelectorAll('[id$="Buttons"]').forEach(function(group) {
 
@@ -500,6 +510,17 @@
             }
         });
     }
+
+    document.querySelectorAll('.click-adjust').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const field = document.getElementById(this.dataset.field);
+            const step = Number(this.dataset.step);
+            const current = Number(field.value || 0);
+
+            field.value = (current + step).toFixed(2);
+        });
+    });
+
 
     initializeButtonGroup('#windspeedButtons', '#windspeed', 'value');
     initializeButtonGroup('#winddirectionButtons', '#winddirection', 'value');

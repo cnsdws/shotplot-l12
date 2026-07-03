@@ -18,8 +18,21 @@
             <div class="form-group"><label>Distance</label><input class="form-control" type="text" name="distance" value="{{ $firestring->distance }}"></div>
 
             @include('firestrings._ammo_select')
-            <div class="form-group"><label>Elevation</label><input class="form-control" type="text" name="elevation" value="{{ $firestring->elevation }}"></div>
-            <div class="form-group"><label>Windage</label><input class="form-control" type="text" name="windage" value="{{ $firestring->windage }}"></div>
+
+            @include('firestrings._click_input', [
+                'label' => 'Elevation',
+                'field' => 'elevation',
+                'value' => $firestring->elevation,
+                'step' => optional(optional($firestring->match)->rifle)->sight_click_moa ?? 0.25
+            ])
+
+            @include('firestrings._click_input', [
+                'label' => 'Windage',
+                'field' => 'windage',
+                'value' => $firestring->windage,
+                'step' => optional(optional($firestring->match)->rifle)->sight_click_moa ?? 0.25
+            ])
+            
             <div class="form-group"><label>Target #</label><input class="form-control" type="text" name="target" value="{{ $firestring->target }}"></div>
             <div class="form-group"><label>Relay #</label><input class="form-control" type="text" name="relay" value="{{ $firestring->relay }}"></div>
             
@@ -395,6 +408,7 @@
         redraw();
     });
 
+
     function initializeButtonGroup(groupSelector, fieldSelector) {
         const field = document.querySelector(fieldSelector);
 
@@ -463,6 +477,16 @@
         button.addEventListener('click', function () {
             activeShotSelect.value = this.dataset.shot;
             updateActiveShotButtons();
+        });
+    });
+
+    document.querySelectorAll('.click-adjust').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const field = document.getElementById(this.dataset.field);
+            const step = Number(this.dataset.step);
+            const current = Number(field.value || 0);
+
+            field.value = (current + step).toFixed(2);
         });
     });
 
