@@ -57,17 +57,20 @@
         </div>
 
         <div class="col-md-6">
-            <h3>Plot Shots</h3>
-            <p class="text-muted">Select a shot number, then click the target to place it.</p>
+            <h3>Shot Plot</h3>
 
-            <div class="form-group">
-                <label for="activeShot">Shot to Edit</label>
-                <select id="activeShot" class="form-control" style="max-width:180px;">
+            <input type="hidden" id="activeShot" value="1">
+
+            <div id="activeShotButtons" style="margin-bottom:15px;">
                     @for ($i = 1; $i <= $firestring->shot_count; $i++)
-                        <option value="{{ $i }}">Shot {{ $i }}</option>
-                    @endfor
-                </select>
+                    <button type="button"
+                            class="btn btn-default btn-sm active-shot-button"
+                            data-shot="{{ $i }}">
+                        {{ $i }}
+                    </button>
+                @endfor
             </div>
+
 
             <canvas id="targetCanvas" width="550" height="550" style="border:1px solid #ccc; max-width:100%; cursor:crosshair;"></canvas>
 
@@ -369,12 +372,18 @@
             scoreInput.value = scoreShot(x, y);
         }
 
+        if (activeShot < shotCount) {
+            activeShotSelect.value = activeShot + 1;
+        }
+
+        updateActiveShotButtons();
         redraw();
     });
 
     document.getElementById('clearActiveShot').addEventListener('click', function () {
         const activeShot = Number(activeShotSelect.value);
         shots[activeShot] = { x: null, y: null };
+        updateActiveShotButtons();
         redraw();
     });
 
@@ -382,36 +391,11 @@
         for (let i = 1; i <= shotCount; i++) {
             shots[i] = { x: null, y: null };
         }
+        updateActiveShotButtons();
         redraw();
     });
 
-    
-    document.querySelectorAll('[id$="Buttons"]').forEach(function(group) {
-
-        group.querySelectorAll('button').forEach(function(button) {
-
-            button.addEventListener('click', function() {
-
-                const field = group.id.replace('Buttons', '');
-
-                document.getElementById(field).value =
-                    this.dataset.value;
-
-                group.querySelectorAll('button')
-                    .forEach(b => {
-                        b.classList.remove('btn-primary');
-                        b.classList.add('btn-default');
-                    });
-
-                this.classList.remove('btn-default');
-                this.classList.add('btn-primary');
-            });
-
-        });
-
-    });
-
-    function initializeButtonGroup(groupSelector, fieldSelector, dataAttribute) {
+    function initializeButtonGroup(groupSelector, fieldSelector) {
         const field = document.querySelector(fieldSelector);
 
         if (!field || !field.value) {
@@ -419,19 +403,74 @@
         }
 
         document.querySelectorAll(groupSelector + ' button').forEach(function (button) {
-            const buttonValue = button.dataset[dataAttribute];
-
-            if (buttonValue == field.value) {
+            if (button.dataset.value == field.value) {
                 button.classList.remove('btn-default');
                 button.classList.add('btn-primary');
             }
         });
     }
 
-    initializeButtonGroup('#windspeedButtons', '#windspeed', 'value');
-    initializeButtonGroup('#winddirectionButtons', '#winddirection', 'value');
-    initializeButtonGroup('#lightdirectionButtons', '#lightdirection', 'value');
+    ['windspeedButtons', 'winddirectionButtons', 'lightdirectionButtons'].forEach(function (groupId) {
+        const group = document.getElementById(groupId);
 
+        if (!group) {
+            return;
+        }
+
+        group.querySelectorAll('button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const field = group.id.replace('Buttons', '');
+                const fieldElement = document.getElementById(field);
+
+                if (!fieldElement) {
+                    return;
+                }
+
+                fieldElement.value = this.dataset.value;
+
+                group.querySelectorAll('button').forEach(function (otherButton) {
+                    otherButton.classList.remove('btn-primary');
+                    otherButton.classList.add('btn-default');
+                });
+
+                this.classList.remove('btn-default');
+                this.classList.add('btn-primary');
+            });
+        });
+    });
+
+    function updateActiveShotButtons() {
+        const activeShot = Number(activeShotSelect.value);
+
+        document.querySelectorAll('.active-shot-button').forEach(function (button) {
+            const shotNumber = Number(button.dataset.shot);
+            const shot = shots[shotNumber];
+            const isPlotted = shot && shot.x !== null && shot.y !== null;
+
+            button.classList.remove('btn-primary', 'btn-success', 'btn-default');
+
+            if (shotNumber === activeShot) {
+                button.classList.add('btn-primary');
+            } else if (isPlotted) {
+                button.classList.add('btn-success');
+            } else {
+                button.classList.add('btn-default');
+            }
+        });
+    }
+
+    document.querySelectorAll('.active-shot-button').forEach(function (button) {
+        button.addEventListener('click', function () {
+            activeShotSelect.value = this.dataset.shot;
+            updateActiveShotButtons();
+        });
+    });
+
+    initializeButtonGroup('#windspeedButtons', '#windspeed');
+    initializeButtonGroup('#winddirectionButtons', '#winddirection');
+    initializeButtonGroup('#lightdirectionButtons', '#lightdirection');
+
+    updateActiveShotButtons();
     redraw();
     })();
 </script>

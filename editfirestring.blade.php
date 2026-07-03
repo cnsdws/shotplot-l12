@@ -1,35 +1,74 @@
 @extends('_firestringmaster')
 
+@section('title')
+<title>Edit Firestring</title>
+@stop
 
-@section('createfirestring')
+@section('editfirestring')
 
-<form action="{{ url('/createfirestring') }}" method="post" role="form">
+<form action="{{ url('/editfirestring/'.$firestring->id) }}" method="post" role="form">
     @csrf
-    <input type="hidden" name="match_id" value="{{ $match_id }}">
+    <input type="hidden" name="id" value="{{ $firestring->id }}">
 
     <div class="row">
         <div class="col-md-3">
             <h3>Firestring Details</h3>
 
-            <div class="form-group"><label>Fire String #</label><input type="text" name="fire_string_number" class="form-control" style="max-width:120px;" value="{{ old('fire_string_number') }}"></div>
+            <div class="form-group">
+                <label>String #</label>
+                <input class="form-control"
+                       type="text"
+                       name="fire_string_number"
+                       style="max-width:120px;"
+                       value="{{ $firestring->fire_string_number }}">
+            </div>
 
             <div class="form-group">
                 <label>Distance</label>
-                <select name="distance" id="distance" class="form-control" style="max-width:120px;">
-                    <option>200 Yard Slow Fire</option>
-                    <option>200 Yard Rapid Fire</option>
-                    <option>300 Yard Rapid Fire</option>
-                    <option>600 Yard Slow Fire</option>
-                </select>
+                <input class="form-control"
+                       type="text"
+                       name="distance"
+                       style="max-width:120px;"
+                       value="{{ $firestring->distance }}">
             </div>
 
             @include('firestrings._ammo_select')
 
-            <div class="form-group"><label>Elevation</label><input type="text" name="elevation" class="form-control"style="max-width:120px;"></div>
-            <div class="form-group"><label>Windage</label><input type="text" name="windage" class="form-control"style="max-width:120px;"></div>
+            <div class="form-group">
+                <label>Elevation</label>
+                <input class="form-control"
+                       type="text"
+                       name="elevation"
+                       style="max-width:120px;"
+                       value="{{ $firestring->elevation }}">
+            </div>
 
-            <div class="form-group"><label>Target #</label><input type="text" name="target" class="form-control"style="max-width:120px;"></div>
-            <div class="form-group"><label>Relay #</label><input type="text" name="relay" class="form-control"style="max-width:120px;"></div>
+            <div class="form-group">
+                <label>Windage</label>
+                <input class="form-control"
+                       type="text"
+                       name="windage"
+                       style="max-width:120px;"
+                       value="{{ $firestring->windage }}">
+            </div>
+
+            <div class="form-group">
+                <label>Target #</label>
+                <input class="form-control"
+                       type="text"
+                       name="target"
+                       style="max-width:120px;"
+                       value="{{ $firestring->target }}">
+            </div>
+
+            <div class="form-group">
+                <label>Relay #</label>
+                <input class="form-control"
+                       type="text"
+                       name="relay"
+                       style="max-width:120px;"
+                       value="{{ $firestring->relay }}">
+            </div>
 
             @include('firestrings._direction_selector', [
                 'label' => 'Light Direction',
@@ -49,21 +88,32 @@
 
             <div class="form-group">
                 <label>Range Notes</label>
-                <textarea name="range_notes" class="form-control" rows="5"></textarea>
+                <textarea class="form-control"
+                          name="range_notes"
+                          rows="5">{{ $firestring->range_notes }}</textarea>
             </div>
-
-            
         </div>
 
         <div class="col-md-3">
             <h3>Shots</h3>
 
-            @for ($i = 1; $i <= 20; $i++)
+            @for ($i = 1; $i <= $firestring->shot_count; $i++)
                 <div class="form-group shot-row" data-shot="{{ $i }}">
                     <label>Shot {{ $i }}</label>
-                    <input type="text" name="shot{{ $i }}value" id="shot{{ $i }}value" class="form-control" style="max-width:120px;">
-                    <input type="hidden" name="shot{{ $i }}x" id="shot{{ $i }}x">
-                    <input type="hidden" name="shot{{ $i }}y" id="shot{{ $i }}y">
+                    <input class="form-control shot-score"
+                           type="text"
+                           name="shot{{ $i }}value"
+                           id="shot{{ $i }}value"
+                           style="max-width:120px;"
+                           value="{{ $firestring->{'shot'.$i.'value'} }}">
+                    <input type="hidden"
+                           id="shot{{ $i }}x"
+                           name="shot{{ $i }}x"
+                           value="{{ $firestring->{'shot'.$i.'x'} }}">
+                    <input type="hidden"
+                           id="shot{{ $i }}y"
+                           name="shot{{ $i }}y"
+                           value="{{ $firestring->{'shot'.$i.'y'} }}">
                     <small id="shot{{ $i }}coords" class="text-muted"></small>
                 </div>
             @endfor
@@ -75,7 +125,7 @@
             <input type="hidden" id="activeShot" value="1">
 
             <div id="activeShotButtons" style="margin-bottom:15px;">
-                @for ($i = 1; $i <= 20; $i++)
+                @for ($i = 1; $i <= $firestring->shot_count; $i++)
                     <button type="button"
                             class="btn btn-default btn-sm active-shot-button"
                             data-shot="{{ $i }}">
@@ -84,7 +134,10 @@
                 @endfor
             </div>
 
-            <canvas id="targetCanvas" width="550" height="550" style="border:1px solid #ccc; max-width:100%; cursor:crosshair;"></canvas>
+            <canvas id="targetCanvas"
+                    width="550"
+                    height="550"
+                    style="border:1px solid #ccc; max-width:100%; cursor:crosshair;"></canvas>
 
             <hr>
 
@@ -95,13 +148,14 @@
                     <p><strong>Group Center:</strong> <span id="groupCenter">N/A</span></p>
                     <p><strong>Extreme Spread:</strong> <span id="extremeSpread">N/A</span></p>
                     <p><strong>Mean Radius:</strong> <span id="meanRadius">N/A</span></p>
+                    <p><strong>Suggested Correction:</strong> <span id="suggestedCorrection">N/A</span></p>
                 </div>
             </div>
 
             <button type="button" id="clearActiveShot" class="btn btn-warning">Clear Active Shot</button>
             <button type="button" id="clearAllShots" class="btn btn-danger">Clear All Shots</button>
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a href="{{ url('/indexfirestring/'.$match_id) }}" class="btn btn-link">Cancel</a>
+            <input type="submit" value="Save" class="btn btn-primary">
+            <a href="/indexfirestring/{{ $firestring->match_id }}" class="btn btn-link">Cancel</a>
         </div>
     </div>
 </form>
@@ -111,72 +165,37 @@
 (function () {
     const canvas = document.getElementById('targetCanvas');
     const ctx = canvas.getContext('2d');
+    const activeShotSelect = document.getElementById('activeShot');
+
     const center = 275;
     const maxRadius = 250;
-    const zeroBook = @json($zeros);
+    const shotCount = {{ $firestring->shot_count }};
+    const sightClickMOA = @json(optional(optional($firestring->match)->rifle)->sight_click_moa ?? 0.25);
 
-    const distanceSelect = document.getElementById('distance');
-    const elevationInput = document.querySelector('[name="elevation"]');
-    const windageInput = document.querySelector('[name="windage"]');
-    const activeShotSelect = document.getElementById('activeShot');
-    const ammoSelect = document.getElementById('ballistic_profile_id');
-    const useDefaultAmmo = document.getElementById('useDefaultAmmo');
-    const defaultAmmoMap = @json($defaultAmmoMap);
+    const targetType = ShotPlotTargetForDistance(@json($firestring->distance));
+    const target = ShotPlotTargets[targetType] || ShotPlotTargets["SR"];
 
-    let shotCount = getShotCount();
-    let target = getTarget();
     const shots = {};
 
-    function applyDefaultAmmoForDistance() {
-        if (!useDefaultAmmo || !useDefaultAmmo.checked) {
-            return;
-        }
+    for (let i = 1; i <= shotCount; i++) {
+        const xInput = document.getElementById(`shot${i}x`);
+        const yInput = document.getElementById(`shot${i}y`);
 
-        if (!ammoSelect) {
-            return;
-        }
-
-        ammoSelect.value = defaultAmmoMap[distanceSelect.value] || '';
-    }
-
-    for (let i = 1; i <= 20; i++) {
-        shots[i] = { x: null, y: null };
-    }
-
-    function getShotCount() {
-        return distanceSelect.value === '600 Yard Slow Fire' ? 20 : 10;
-    }
-
-    function getTarget() {
-        const targetType = ShotPlotTargetForDistance(distanceSelect.value);
-        return ShotPlotTargets[targetType] || ShotPlotTargets["SR"];
-    }
-
-    function rebuildActiveShotOptions() {
-        if (Number(activeShotSelect.value) > shotCount) {
-            activeShotSelect.value = shotCount;
-        }
-
-        document.querySelectorAll('.shot-row').forEach(function (row) {
-            const shotNumber = Number(row.dataset.shot);
-            row.style.display = shotNumber <= shotCount ? '' : 'none';
-        });
-
-        document.querySelectorAll('.active-shot-button').forEach(function (button) {
-            const shotNumber = Number(button.dataset.shot);
-            button.style.display = shotNumber <= shotCount ? '' : 'none';
-        });
+        shots[i] = {
+            x: xInput.value === '' ? null : Number(xInput.value),
+            y: yInput.value === '' ? null : Number(yInput.value)
+        };
     }
 
     function drawTarget() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         ctx.fillStyle = '#f9f9f9';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         target.rings.forEach(function (ring) {
-            const ringRadius = ShotPlotRingRadiusPx(target, ring, maxRadius);
-
             ctx.beginPath();
+            const ringRadius = ShotPlotRingRadiusPx(target, ring, maxRadius);
             ctx.arc(center, center, ringRadius, 0, Math.PI * 2);
 
             const scoreNum = Number(ring.score);
@@ -186,6 +205,7 @@
 
             ctx.fillStyle = isBlackRing ? '#222' : '#fff';
             ctx.fill();
+
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 1;
             ctx.stroke();
@@ -207,6 +227,8 @@
 
         ctx.fillStyle = '#000';
         ctx.font = '13px Arial';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
         ctx.fillText(target.label, 12, 22);
     }
 
@@ -215,6 +237,7 @@
 
         return target.rings.some(function (ring) {
             const scoreNum = Number(ring.score);
+
             return (
                 target.blackRings.includes(ring.score) ||
                 target.blackRings.includes(scoreNum)
@@ -239,11 +262,11 @@
     }
 
     function drawShots() {
-        for (let i = 1; i <= shotCount; i++) {
-            const shot = shots[i];
+        Object.keys(shots).forEach(function (key) {
+            const shot = shots[key];
 
-            if (shot.x === null || shot.y === null) {
-                continue;
+            if (shot.x === null || shot.y === null || Number.isNaN(shot.x) || Number.isNaN(shot.y)) {
+                return;
             }
 
             const isInBlack = isPointInBlack(shot.x, shot.y);
@@ -252,6 +275,7 @@
             ctx.arc(shot.x, shot.y, 9, 0, Math.PI * 2);
             ctx.fillStyle = isInBlack ? '#ffffff' : '#d9534f';
             ctx.fill();
+
             ctx.strokeStyle = '#000000';
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -260,12 +284,12 @@
             ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(i, shot.x, shot.y);
-        }
+            ctx.fillText(key, shot.x, shot.y);
+        });
     }
 
     function updateInputs() {
-        for (let i = 1; i <= 20; i++) {
+        for (let i = 1; i <= shotCount; i++) {
             const xInput = document.getElementById(`shot${i}x`);
             const yInput = document.getElementById(`shot${i}y`);
             const coords = document.getElementById(`shot${i}coords`);
@@ -286,8 +310,10 @@
         const plottedShots = [];
 
         for (let i = 1; i <= shotCount; i++) {
-            if (shots[i].x !== null && shots[i].y !== null) {
-                plottedShots.push(shots[i]);
+            const shot = shots[i];
+
+            if (shot.x !== null && shot.y !== null && !Number.isNaN(shot.x) && !Number.isNaN(shot.y)) {
+                plottedShots.push(shot);
             }
         }
 
@@ -297,6 +323,7 @@
             document.getElementById('groupCenter').textContent = 'N/A';
             document.getElementById('extremeSpread').textContent = 'N/A';
             document.getElementById('meanRadius').textContent = 'N/A';
+            document.getElementById('suggestedCorrection').textContent = 'N/A';
             return;
         }
 
@@ -347,7 +374,7 @@
         const extremeSpreadMOA = (maxSpread * inchesPerPixel) / inchesPerMOA;
 
         document.getElementById('extremeSpread').textContent =
-        extremeSpreadMOA.toFixed(2) + ' MOA';
+            extremeSpreadMOA.toFixed(2) + ' MOA';
 
         let totalRadius = 0;
 
@@ -367,38 +394,115 @@
 
         document.getElementById('meanRadius').textContent =
             meanRadiusMOA.toFixed(2) + ' MOA';
-    }
 
-    function applyZeroForDistance() {
-        const zero = zeroBook[distanceSelect.value];
+        const horizontalClicks =
+            Math.round(Math.abs(dxMOA) / sightClickMOA);
 
-        if (!zero) {
-            elevationInput.value = '';
-            windageInput.value = '';
-            return;
-        }
+        const verticalClicks =
+            Math.round(Math.abs(dyMOA) / sightClickMOA);
 
-        if (elevationInput) {
-            elevationInput.value = zero.elevation ?? '';
-        }
+        const horizontalCorrection =
+            dxMOA > 0
+                ? horizontalClicks + ' Clicks Left'
+                : horizontalClicks + ' Clicks Right';
 
-        if (windageInput) {
-            windageInput.value = zero.windage ?? '';
-        }
-    }
+        const verticalCorrection =
+            dyMOA > 0
+                ? verticalClicks + ' Clicks Down'
+                : verticalClicks + ' Clicks Up';
 
-    function applyStageConfiguration() {
-        applyZeroForDistance();
-        applyDefaultAmmoForDistance();
+        document.getElementById('suggestedCorrection').textContent =
+            horizontalCorrection + ', ' + verticalCorrection;
     }
 
     function redraw() {
-        target = getTarget();
-        shotCount = getShotCount();
         drawTarget();
         drawShots();
         updateInputs();
         analyzeGroup();
+    }
+
+    function updateActiveShotButtons() {
+        const activeShot = Number(activeShotSelect.value);
+
+        document.querySelectorAll('.active-shot-button').forEach(function (button) {
+            const shotNumber = Number(button.dataset.shot);
+            const shot = shots[shotNumber];
+            const isPlotted = shot && shot.x !== null && shot.y !== null;
+
+            button.classList.remove('btn-primary', 'btn-success', 'btn-default');
+
+            if (shotNumber === activeShot) {
+                button.classList.add('btn-primary');
+            } else if (isPlotted) {
+                button.classList.add('btn-success');
+            } else {
+                button.classList.add('btn-default');
+            }
+        });
+    }
+
+    function initializeButtonGroup(groupSelector, fieldSelector, dataAttribute) {
+        const field = document.querySelector(fieldSelector);
+
+        if (!field || !field.value) {
+            return;
+        }
+
+        document.querySelectorAll(groupSelector + ' button').forEach(function (button) {
+            const buttonValue = button.dataset[dataAttribute];
+
+            if (buttonValue == field.value) {
+                button.classList.remove('btn-default');
+                button.classList.add('btn-primary');
+            }
+        });
+    }
+
+    function initializeConditionButtons() {
+        ['windspeedButtons', 'winddirectionButtons', 'lightdirectionButtons'].forEach(function (groupId) {
+            const group = document.getElementById(groupId);
+
+            if (!group) {
+                return;
+            }
+
+            group.querySelectorAll('button').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const field = group.id.replace('Buttons', '');
+                    const fieldElement = document.getElementById(field);
+
+                    if (!fieldElement) {
+                        return;
+                    }
+
+                    fieldElement.value = this.dataset.value;
+
+                    group.querySelectorAll('button').forEach(function (otherButton) {
+                        otherButton.classList.remove('btn-primary');
+                        otherButton.classList.add('btn-default');
+                    });
+
+                    this.classList.remove('btn-default');
+                    this.classList.add('btn-primary');
+                });
+            });
+        });
+
+        initializeButtonGroup('#windspeedButtons', '#windspeed', 'value');
+        initializeButtonGroup('#winddirectionButtons', '#winddirection', 'value');
+        initializeButtonGroup('#lightdirectionButtons', '#lightdirection', 'value');
+    }
+
+    function initializeActiveShotButtons() {
+        document.querySelectorAll('.active-shot-button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                activeShotSelect.value = this.dataset.shot;
+                updateActiveShotButtons();
+            });
+        });
+
+        updateActiveShotButtons();
     }
 
     canvas.addEventListener('click', function (event) {
@@ -435,11 +539,12 @@
             scoreInput.value = '';
         }
 
+        updateActiveShotButtons();
         redraw();
     });
 
     document.getElementById('clearAllShots').addEventListener('click', function () {
-        for (let i = 1; i <= 20; i++) {
+        for (let i = 1; i <= shotCount; i++) {
             shots[i] = { x: null, y: null };
 
             const scoreInput = document.getElementById(`shot${i}value`);
@@ -448,97 +553,14 @@
             }
         }
 
+        updateActiveShotButtons();
         redraw();
     });
 
-        distanceSelect.addEventListener('change', function () {
-        shotCount = getShotCount();
-        rebuildActiveShotOptions();
-        applyStageConfiguration();
-        redraw();
-    });
-
-    
-    document.querySelectorAll('[id$="Buttons"]').forEach(function(group) {
-
-        group.querySelectorAll('button').forEach(function(button) {
-
-            button.addEventListener('click', function() {
-
-                const field = group.id.replace('Buttons', '');
-
-                document.getElementById(field).value =
-                    this.dataset.value;
-
-                group.querySelectorAll('button')
-                    .forEach(b => {
-                        b.classList.remove('btn-primary');
-                        b.classList.add('btn-default');
-                    });
-
-                this.classList.remove('btn-default');
-                this.classList.add('btn-primary');
-            });
-
-        });
-
-    });
-
-    function initializeButtonGroup(groupSelector, fieldSelector, dataAttribute) {
-        const field = document.querySelector(fieldSelector);
-
-        if (!field || !field.value) {
-            return;
-        }
-
-        document.querySelectorAll(groupSelector + ' button').forEach(function (button) {
-            const buttonValue = button.dataset[dataAttribute];
-
-            if (buttonValue == field.value) {
-                button.classList.remove('btn-default');
-                button.classList.add('btn-primary');
-            }
-        });
-    }
-
-    initializeButtonGroup('#windspeedButtons', '#windspeed', 'value');
-    initializeButtonGroup('#winddirectionButtons', '#winddirection', 'value');
-    initializeButtonGroup('#lightdirectionButtons', '#lightdirection', 'value');
-
-    function updateActiveShotButtons() {
-        const activeShot = Number(activeShotSelect.value);
-
-        document.querySelectorAll('.active-shot-button').forEach(function (button) {
-            const shotNumber = Number(button.dataset.shot);
-            const shot = shots[shotNumber];
-            const isPlotted = shot && shot.x !== null && shot.y !== null;
-
-            button.classList.remove('btn-primary', 'btn-success', 'btn-default');
-
-            if (shotNumber === activeShot) {
-                button.classList.add('btn-primary');
-            } else if (isPlotted) {
-                button.classList.add('btn-success');
-            } else {
-                button.classList.add('btn-default');
-            }
-        });
-    }
-
-        document.querySelectorAll('.active-shot-button').forEach(function (button) {
-            button.addEventListener('click', function () {
-                activeShotSelect.value = this.dataset.shot;
-                updateActiveShotButtons();
-            });
-        });
-
-    rebuildActiveShotOptions();
-    applyStageConfiguration();
-    updateActiveShotButtons();
+    initializeConditionButtons();
+    initializeActiveShotButtons();
     redraw();
-    })();
-
-
+})();
 </script>
 
 @stop
