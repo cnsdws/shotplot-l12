@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Domains\Target\Contracts\TargetServiceInterface;
+use App\Domains\Target\Services\TargetService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(
+                TargetServiceInterface::class,
+                TargetService::class
+            );
     }
 
     /**

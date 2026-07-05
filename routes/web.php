@@ -10,7 +10,8 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\BallisticProfileController;
 
-Route::middleware('auth')->group(function () {
+
+    Route::middleware('auth')->group(function () {
     Route::get('/', [PositionsController::class, 'index']);
     Route::get('/match', [PositionsController::class, 'index']);
 
@@ -75,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/ballistics/{ballisticProfile}/edit', [BallisticProfileController::class, 'edit']);
     Route::post('/ballistics/{ballisticProfile}', [BallisticProfileController::class, 'update']);
     Route::post('/ballistics/{ballisticProfile}/delete', [BallisticProfileController::class, 'destroy']);
+                                 
                                  
 });
 
