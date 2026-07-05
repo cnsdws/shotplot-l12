@@ -169,3 +169,111 @@ Castle Rock Holiday Match → copied by Dennis → modified for 100-yard reduced
 6. ShotPlot recommendations should use clicks, not MOA, when advising the shooter.
 7. The system should support yards and meters.
 8. The system should support full-distance, reduced-distance, and mixed-distance matches.
+
+
+# Future Concepts
+
+## Relay
+A group of shooters firing together.
+
+## Target Assignment
+Associates a shooter with a target for a relay.
+
+## Squad
+A group of shooters who move through a match together.
+
+## Scorer
+Records another shooter's score.
+
+## Pit Duty
+Tracks target pulling assignments.
+
+## Classification
+NRA/CMP classification.
+
+Examples:
+- High Master
+- Master
+- Expert
+- Sharpshooter
+- Marksman
+
+## Badge
+Achievements earned.
+
+Examples:
+- Distinguished Rifleman
+- President's Hundred
+- Leg Points
+
+## Ammunition Lot
+Tracks lot-specific performance.
+
+## Equipment Configuration
+Scope, sling, coat, glove, shooting mat, etc.
+
+## Training Session
+A non-match practice event.
+
+## Knowledge Rule
+A coaching rule used by the ShotPlot recommendation engine.
+
+Examples:
+- Do not chase a single shot.
+- Fire a group before adjusting.
+- Wind changes should not affect elevation.
+
+
+## Modular Architecture Principle
+
+ShotPlot should be organized as domain modules inside Laravel.
+
+The Core orchestrates. Modules specialize.
+
+### Core Responsibilities
+
+- Route requests
+- Coordinate workflows
+- Authenticate users
+- Authorize actions
+- Persist user activity
+- Render views
+- Call domain services
+
+### Domain Module Responsibilities
+
+Each major ShotPlot concept should eventually live behind a service interface.
+
+Initial modules:
+
+- Target Module
+- Course Module
+- Rule Set Module
+- Match Generator Module
+- Baseline Module
+- Recommendation Module
+- Analytics Module
+- Rifle Module
+- Organization Module
+
+### Design Rules
+
+1. Controllers orchestrate workflows.
+2. Domain services contain business logic.
+3. Blade views only display data.
+4. Models persist data but should not become rule engines.
+5. Modules communicate through public service methods.
+6. Modules should not depend on Blade views or controllers.
+7. Built-in targets, courses, baselines, and rule sets should be versioned content.
+8. Services should be replaceable without changing the rest of the application.
+
+### Example Service Calls
+
+```php
+$target = app(TargetService::class)->resolve($stage, $rangeSetup);
+
+$firestrings = app(MatchGeneratorService::class)
+    ->generateFirestrings($match, $courseTemplate, $rangeSetup);
+
+$recommendation = app(RecommendationService::class)
+    ->analyze($firestring);
