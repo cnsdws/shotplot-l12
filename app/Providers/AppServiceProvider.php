@@ -7,6 +7,8 @@ use App\Domains\Target\Contracts\TargetServiceInterface;
 use App\Domains\Target\Services\TargetService;
 use App\Domains\Position\Contracts\PositionServiceInterface;
 use App\Domains\Position\Services\PositionService;
+use App\Domains\Stage\Contracts\StageServiceInterface;
+use App\Domains\Stage\Services\StageService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             PositionServiceInterface::class,
             PositionService::class
+        );
+        
+        $this->app->singleton(
+            StageServiceInterface::class,
+            StageService::class
         );
     }
 
