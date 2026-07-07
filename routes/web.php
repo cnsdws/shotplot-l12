@@ -12,6 +12,7 @@ use App\Http\Controllers\BallisticProfileController;
 
 
 
+
     Route::middleware('auth')->group(function () {
     Route::get('/', [PositionsController::class, 'index']);
     Route::get('/match', [PositionsController::class, 'index']);

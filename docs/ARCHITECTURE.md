@@ -20,3 +20,63 @@ System profiles have user_id = null and is_system = true.
 User-created profiles have user_id = the owner's user id.
 
 Future rifle/distance defaults may auto-select a ballistic profile when creating a firestring, but the shooter can override it.
+
+# Domain Standards
+
+## Domain Layout
+
+Contracts/
+Data/
+DTOs/
+Models/
+Repositories/
+Services/
+Tests/
+
+Every domain follows the same structure.
+
+---
+
+## Business Logic
+
+Business rules live in Services.
+
+Controllers orchestrate only.
+
+Views contain no business logic.
+
+---
+
+## IDs
+
+Every reusable definition has a permanent ID.
+
+Example:
+
+200-slow-standing
+
+Names may change.
+IDs never do.
+
+---
+
+## Reference Data
+
+Static definitions live under Data/.
+
+Examples:
+
+target_definitions.php
+position_definitions.php
+nra_high_power.php
+
+These files contain data only.
+No executable code.
+
+---
+
+## Dependency Rules
+
+Domains communicate through Services and Contracts.
+
+Domains never read another domain's Data directly.
