@@ -1,15 +1,18 @@
 <?php
 
-namespace App\Domains\CourseResolver\Services;
+namespace App\Domains\CoursePlanner\Services;
 
 use App\Domains\Course\Contracts\CourseServiceInterface;
 use App\Domains\Stage\Contracts\StageServiceInterface;
 use App\Domains\Position\Contracts\PositionServiceInterface;
 use App\Domains\Target\Contracts\TargetServiceInterface;
-use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
 use App\Domains\RuleSet\Contracts\RuleSetServiceInterface;
 
-class CourseResolver implements CourseResolverInterface
+use App\Domains\CoursePlanner\Contracts\CoursePlannerServiceInterface;
+use App\Domains\CoursePlanner\DTOs\CoursePlan;
+use App\Domains\CoursePlanner\DTOs\StagePlan;
+
+class CoursePlannerService implements CoursePlannerServiceInterface
 {
     public function __construct(
         protected CourseServiceInterface $courses,
@@ -20,18 +23,19 @@ class CourseResolver implements CourseResolverInterface
     ) {
     }
 
-    public function resolve(string $courseId): array
+    public function buildPlan(string $courseId): CoursePlan
     {
         $course = $this->courses->get($courseId);
-        $ruleSet = $this->ruleSets->get($course['ruleSetId'] ?? '');
 
         if (!$course) {
-            return [];
+            return new CoursePlan([], null, []);
         }
+
+        $ruleSet = $this->ruleSets->get($course['ruleSetId'] ?? '');
 
         $resolvedStages = [];
 
-        foreach ($course['stages'] as $stageId) {
+        foreach ($course['stages'] as $index => $stageId) {
 
             $stage = $this->stages->get($stageId);
 
@@ -49,23 +53,18 @@ class CourseResolver implements CourseResolverInterface
 
             $target = $this->targets->get($targetId);
 
-            $resolvedStages[] = [
-
-                'stage' => $stage,
-
-                'position' => $position,
-
-                'target' => $target,
-
-            ];
+            $resolvedStages[] = new StagePlan(
+                number: $index + 1,
+                stage: $stage,
+                position: $position,
+                target: $target,
+            );
         }
 
-        return [
-
-            'course' => $course,
-            'ruleSet' => $ruleSet,
-            'stages' => $resolvedStages,
-
-        ];
+        return new CoursePlan(
+            course: $course,
+            ruleSet: $ruleSet,
+            stages: $resolvedStages,
+        );
     }
 }

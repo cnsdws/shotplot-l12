@@ -9,10 +9,7 @@ use App\Http\Controllers\FirestringAdjustmentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\BallisticProfileController;
-use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
 
-
-    
 
     Route::middleware('auth')->group(function () {
     Route::get('/', [PositionsController::class, 'index']);
@@ -79,17 +76,8 @@ use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
     Route::get('/ballistics/{ballisticProfile}/edit', [BallisticProfileController::class, 'edit']);
     Route::post('/ballistics/{ballisticProfile}', [BallisticProfileController::class, 'update']);
     Route::post('/ballistics/{ballisticProfile}/delete', [BallisticProfileController::class, 'destroy']);
-                                     
-    Route::get('/dev/course', function (
-                                         CourseResolverInterface $resolver
-                                     ) {
-                                         dd(
-                                             $resolver->resolve(
-                                                 'nra-hp-national-match'
-                                             )
-                                         );
-                                     });
-                                     
+  
+
                                  
 });
 
