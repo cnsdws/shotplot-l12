@@ -11,6 +11,8 @@ use App\Domains\Stage\Contracts\StageServiceInterface;
 use App\Domains\Stage\Services\StageService;
 use App\Domains\Course\Contracts\CourseServiceInterface;
 use App\Domains\Course\Services\CourseService;
+use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
+use App\Domains\CourseResolver\Services\CourseResolver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +39,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             CourseServiceInterface::class,
             CourseService::class
+        );
+        
+        $this->app->singleton(
+            CourseResolverInterface::class,
+            CourseResolver::class
         );
         
     }
