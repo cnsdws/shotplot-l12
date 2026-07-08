@@ -9,6 +9,8 @@ use App\Domains\Position\Contracts\PositionServiceInterface;
 use App\Domains\Position\Services\PositionService;
 use App\Domains\Stage\Contracts\StageServiceInterface;
 use App\Domains\Stage\Services\StageService;
+use App\Domains\Course\Contracts\CourseServiceInterface;
+use App\Domains\Course\Services\CourseService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
             StageServiceInterface::class,
             StageService::class
         );
+        
+        $this->app->singleton(
+            CourseServiceInterface::class,
+            CourseService::class
+        );
+        
     }
 
     /**
