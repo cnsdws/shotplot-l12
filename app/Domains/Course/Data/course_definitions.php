@@ -7,6 +7,8 @@ return [
         'id' => 'nra-hp-national-match',
 
         'name' => 'NRA National Match Course',
+        
+        'ruleSetId' => 'nra-high-power',
 
         'stages' => [
 

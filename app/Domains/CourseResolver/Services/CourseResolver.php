@@ -7,6 +7,7 @@ use App\Domains\Stage\Contracts\StageServiceInterface;
 use App\Domains\Position\Contracts\PositionServiceInterface;
 use App\Domains\Target\Contracts\TargetServiceInterface;
 use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
+use App\Domains\RuleSet\Contracts\RuleSetServiceInterface;
 
 class CourseResolver implements CourseResolverInterface
 {
@@ -15,12 +16,14 @@ class CourseResolver implements CourseResolverInterface
         protected StageServiceInterface $stages,
         protected PositionServiceInterface $positions,
         protected TargetServiceInterface $targets,
+        protected RuleSetServiceInterface $ruleSets,
     ) {
     }
 
     public function resolve(string $courseId): array
     {
         $course = $this->courses->get($courseId);
+        $ruleSet = $this->ruleSets->get($course['ruleSetId'] ?? '');
 
         if (!$course) {
             return [];
@@ -60,7 +63,7 @@ class CourseResolver implements CourseResolverInterface
         return [
 
             'course' => $course,
-
+            'ruleSet' => $ruleSet,
             'stages' => $resolvedStages,
 
         ];
