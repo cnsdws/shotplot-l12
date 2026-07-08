@@ -13,6 +13,8 @@ use App\Domains\Course\Contracts\CourseServiceInterface;
 use App\Domains\Course\Services\CourseService;
 use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
 use App\Domains\CourseResolver\Services\CourseResolver;
+use App\Domains\RuleSet\Contracts\RuleSetServiceInterface;
+use App\Domains\RuleSet\Services\RuleSetService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,6 +46,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             CourseResolverInterface::class,
             CourseResolver::class
+        );
+        
+        $this->app->singleton(
+            RuleSetServiceInterface::class,
+            RuleSetService::class
         );
         
     }

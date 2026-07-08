@@ -79,9 +79,6 @@ use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
     Route::post('/ballistics/{ballisticProfile}', [BallisticProfileController::class, 'update']);
     Route::post('/ballistics/{ballisticProfile}/delete', [BallisticProfileController::class, 'destroy']);
                                      
-    Route::get('/dev/course', function (CourseResolverInterface $resolver) {dd($resolver->resolve('nra-hp-national-match'));});
-                                     
-                                 
                                  
 });
 
