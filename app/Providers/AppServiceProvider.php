@@ -21,6 +21,8 @@ use App\Domains\Firestring\Contracts\FirestringServiceInterface;
 use App\Domains\Firestring\Services\FirestringService;
 use App\Domains\Shot\Contracts\LegacyShotMapperInterface;
 use App\Domains\Shot\Services\LegacyShotMapper;
+use App\Domains\ShotAnalysis\Contracts\ShotGroupAnalyzerInterface;
+use App\Domains\ShotAnalysis\Services\ShotGroupAnalyzer;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -78,6 +80,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             LegacyShotMapperInterface::class,
             LegacyShotMapper::class
+        );
+        
+        $this->app->bind(
+            ShotGroupAnalyzerInterface::class,
+            ShotGroupAnalyzer::class
         );
         
     }
