@@ -9,7 +9,7 @@ return [
         'fireType' => 'slow',
         'distance' => 200,
         'distanceUnit' => 'yards',
-        'shotCount' => 20,
+        'shotCount' => 10,
     ],
 
     'nra-hp-200-rapid-sitting' => [

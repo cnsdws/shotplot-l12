@@ -24,16 +24,16 @@ class TargetService implements TargetServiceInterface
     {
         return $this->targets[$target] ?? null;
     }
-    
+
     public function targetForStage(string $stage): string
     {
         return match ($stage) {
             '200 Yard Slow Fire',
             '200 Yard Rapid Fire' => 'SR',
 
-            '300 Yard Rapid Fire' => 'SR-42',
+            '300 Yard Rapid Fire' => 'SR-3',
 
-            '600 Yard Slow Fire' => 'MR-52',
+            '600 Yard Slow Fire' => 'MR-1',
 
             default => 'SR',
         };
