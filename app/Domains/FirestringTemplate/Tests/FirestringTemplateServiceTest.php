@@ -5,7 +5,9 @@ namespace App\Domains\FirestringTemplate\Tests;
 use App\Domains\CoursePlanner\DTOs\StagePlan;
 use App\Domains\FirestringTemplate\Contracts\FirestringTemplateServiceInterface;
 use App\Domains\FirestringTemplate\DTOs\FirestringTemplate;
+use App\Domains\Position\DTOs\PositionDefinition;
 use App\Domains\Stage\DTOs\StageDefinition;
+use App\Domains\Target\DTOs\TargetDefinition;
 use Tests\TestCase;
 
 class FirestringTemplateServiceTest extends TestCase
@@ -36,13 +38,20 @@ class FirestringTemplateServiceTest extends TestCase
                 distanceUnit: 'yards',
                 shotCount: 10,
             ),
-            position: [
-                'id' => 'standing',
-                'label' => 'Standing',
-            ],
-            target: [
-                'label' => 'SR - 200 Yard High Power',
-            ],
+            position: new PositionDefinition(
+                id: 'standing',
+                name: 'Standing',
+                allowsSlingSupport: false,
+                allowsMagazineSupport: false,
+                description: 'Erect on both feet with no other portion of the body touching the ground or support.',
+            ),
+            target: new TargetDefinition(
+                id: 'SR',
+                label: 'SR - 200 Yard High Power',
+                distanceYards: 200,
+                blackRings: [9, 10, 'X'],
+                rings: [],
+            ),
         );
 
         $template = $service->build($stagePlan);
@@ -83,13 +92,20 @@ class FirestringTemplateServiceTest extends TestCase
                 distanceUnit: 'yards',
                 shotCount: 20,
             ),
-            position: [
-                'id' => 'prone',
-                'label' => 'Prone',
-            ],
-            target: [
-                'label' => 'MR-1 - 600 Yard Mid-Range',
-            ],
+            position: new PositionDefinition(
+                id: 'prone',
+                name: 'Prone',
+                allowsSlingSupport: true,
+                allowsMagazineSupport: false,
+                description: 'Body extended on the ground, head toward the target.',
+            ),
+            target: new TargetDefinition(
+                id: 'MR-1',
+                label: 'MR-1 - 600 Yard Mid-Range',
+                distanceYards: 600,
+                blackRings: [7, 8, 9, 10, 'X'],
+                rings: [],
+            ),
         );
 
         $attributes = $service

@@ -2,11 +2,14 @@
 
 namespace App\Domains\Target\Contracts;
 
+use App\Domains\Target\DTOs\TargetDefinition;
+
 interface TargetServiceInterface
 {
+    /**
+     * @return array<string, TargetDefinition>
+     */
     public function all(): array;
 
-    public function get(string $target): ?array;
-    
-    public function targetForStage(string $stage): string;
+    public function get(string $target): ?TargetDefinition;
 }

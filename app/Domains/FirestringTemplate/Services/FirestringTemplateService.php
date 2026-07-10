@@ -14,7 +14,7 @@ final class FirestringTemplateService implements FirestringTemplateServiceInterf
             number: $stagePlan->number,
             stageName: $stagePlan->stage->name,
             shotCount: $stagePlan->stage->shotCount,
-            target: (string) ($stagePlan->target['label'] ?? ''),
+            target: $stagePlan->target?->label ?? '',
         );
     }
 }

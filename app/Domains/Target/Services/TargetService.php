@@ -3,16 +3,27 @@
 namespace App\Domains\Target\Services;
 
 use App\Domains\Target\Contracts\TargetServiceInterface;
+use App\Domains\Target\DTOs\TargetDefinition;
 
 class TargetService implements TargetServiceInterface
 {
+    /**
+     * @var array<string, TargetDefinition>
+     */
     protected array $targets;
 
     public function __construct()
     {
-        $this->targets = require app_path(
+        $definitions = require app_path(
             'Domains/Target/Data/target_definitions.php'
         );
+
+        $this->targets = collect($definitions)
+            ->map(
+                fn (array $definition, string $id) =>
+                    TargetDefinition::fromArray($id, $definition)
+            )
+            ->all();
     }
 
     public function all(): array
@@ -20,22 +31,8 @@ class TargetService implements TargetServiceInterface
         return $this->targets;
     }
 
-    public function get(string $target): ?array
+    public function get(string $target): ?TargetDefinition
     {
         return $this->targets[$target] ?? null;
-    }
-
-    public function targetForStage(string $stage): string
-    {
-        return match ($stage) {
-            '200 Yard Slow Fire',
-            '200 Yard Rapid Fire' => 'SR',
-
-            '300 Yard Rapid Fire' => 'SR-3',
-
-            '600 Yard Slow Fire' => 'MR-1',
-
-            default => 'SR',
-        };
     }
 }
