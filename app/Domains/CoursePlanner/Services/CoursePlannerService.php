@@ -3,14 +3,13 @@
 namespace App\Domains\CoursePlanner\Services;
 
 use App\Domains\Course\Contracts\CourseServiceInterface;
-use App\Domains\Stage\Contracts\StageServiceInterface;
-use App\Domains\Position\Contracts\PositionServiceInterface;
-use App\Domains\Target\Contracts\TargetServiceInterface;
-use App\Domains\RuleSet\Contracts\RuleSetServiceInterface;
-
 use App\Domains\CoursePlanner\Contracts\CoursePlannerServiceInterface;
 use App\Domains\CoursePlanner\DTOs\CoursePlan;
 use App\Domains\CoursePlanner\DTOs\StagePlan;
+use App\Domains\Position\Contracts\PositionServiceInterface;
+use App\Domains\RuleSet\Contracts\RuleSetServiceInterface;
+use App\Domains\Stage\Contracts\StageServiceInterface;
+use App\Domains\Target\Contracts\TargetServiceInterface;
 
 class CoursePlannerService implements CoursePlannerServiceInterface
 {
@@ -27,31 +26,30 @@ class CoursePlannerService implements CoursePlannerServiceInterface
     {
         $course = $this->courses->get($courseId);
 
-        if (!$course) {
+        if (! $course) {
             return new CoursePlan([], null, []);
         }
 
-        $ruleSet = $this->ruleSets->get($course['ruleSetId'] ?? '');
+        $ruleSet = $this->ruleSets->get(
+            $course['ruleSetId'] ?? ''
+        );
 
         $resolvedStages = [];
 
         foreach ($course['stages'] as $index => $stageId) {
-
             $stage = $this->stages->get($stageId);
 
-            if (!$stage) {
+            if (! $stage) {
                 continue;
             }
 
             $position = $this->positions->get(
-                $stage['positionId']
+                $stage->positionId
             );
 
-            $targetId = $this->targets->targetForStage(
-                $stage['name']
+            $target = $this->targets->get(
+                $stage->targetId
             );
-
-            $target = $this->targets->get($targetId);
 
             $resolvedStages[] = new StagePlan(
                 number: $index + 1,

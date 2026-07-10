@@ -5,6 +5,7 @@ namespace App\Domains\FirestringTemplate\Tests;
 use App\Domains\CoursePlanner\DTOs\StagePlan;
 use App\Domains\FirestringTemplate\Contracts\FirestringTemplateServiceInterface;
 use App\Domains\FirestringTemplate\DTOs\FirestringTemplate;
+use App\Domains\Stage\DTOs\StageDefinition;
 use Tests\TestCase;
 
 class FirestringTemplateServiceTest extends TestCase
@@ -25,27 +26,42 @@ class FirestringTemplateServiceTest extends TestCase
 
         $stagePlan = new StagePlan(
             number: 1,
-            stage: [
-                'name' => '200 Yard Slow Fire',
-                'shotCount' => 10,
-            ],
+            stage: new StageDefinition(
+                id: 'nra-hp-200-slow-standing',
+                name: '200 Yard Slow Fire',
+                positionId: 'standing',
+                targetId: 'SR',
+                fireType: 'slow',
+                distance: 200,
+                distanceUnit: 'yards',
+                shotCount: 10,
+            ),
             position: [
                 'id' => 'standing',
                 'label' => 'Standing',
             ],
             target: [
-                'id' => 'sr',
-                'label' => 'SR',
+                'label' => 'SR - 200 Yard High Power',
             ],
         );
 
         $template = $service->build($stagePlan);
 
-        $this->assertInstanceOf(FirestringTemplate::class, $template);
+        $this->assertInstanceOf(
+            FirestringTemplate::class,
+            $template
+        );
+
         $this->assertSame(1, $template->number);
-        $this->assertSame('200 Yard Slow Fire', $template->stageName);
+        $this->assertSame(
+            '200 Yard Slow Fire',
+            $template->stageName
+        );
         $this->assertSame(10, $template->shotCount);
-        $this->assertSame('SR', $template->target);
+        $this->assertSame(
+            'SR - 200 Yard High Power',
+            $template->target
+        );
         $this->assertSame(0, $template->windSpeed);
         $this->assertSame(0, $template->elevation);
         $this->assertSame(0, $template->windage);
@@ -57,17 +73,22 @@ class FirestringTemplateServiceTest extends TestCase
 
         $stagePlan = new StagePlan(
             number: 4,
-            stage: [
-                'name' => '600 Yard Slow Fire',
-                'shotCount' => 20,
-            ],
+            stage: new StageDefinition(
+                id: 'nra-hp-600-slow-prone',
+                name: '600 Yard Slow Fire',
+                positionId: 'prone',
+                targetId: 'MR-1',
+                fireType: 'slow',
+                distance: 600,
+                distanceUnit: 'yards',
+                shotCount: 20,
+            ),
             position: [
                 'id' => 'prone',
                 'label' => 'Prone',
             ],
             target: [
-                'id' => 'mr-1',
-                'label' => 'MR-1',
+                'label' => 'MR-1 - 600 Yard Mid-Range',
             ],
         );
 
@@ -76,13 +97,22 @@ class FirestringTemplateServiceTest extends TestCase
             ->toLegacyAttributes(42);
 
         $this->assertSame(42, $attributes['match_id']);
-        $this->assertSame(4, $attributes['fire_string_number']);
+        $this->assertSame(
+            4,
+            $attributes['fire_string_number']
+        );
         $this->assertSame(
             '600 Yard Slow Fire',
             $attributes['distance']
         );
-        $this->assertSame('MR-1', $attributes['target']);
+        $this->assertSame(
+            'MR-1 - 600 Yard Mid-Range',
+            $attributes['target']
+        );
 
-        $this->assertArrayNotHasKey('shot_count', $attributes);
+        $this->assertArrayNotHasKey(
+            'shot_count',
+            $attributes
+        );
     }
 }

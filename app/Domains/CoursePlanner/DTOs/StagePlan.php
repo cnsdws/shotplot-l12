@@ -2,11 +2,13 @@
 
 namespace App\Domains\CoursePlanner\DTOs;
 
-class StagePlan
+use App\Domains\Stage\DTOs\StageDefinition;
+
+final readonly class StagePlan
 {
     public function __construct(
         public int $number,
-        public array $stage,
+        public StageDefinition $stage,
         public ?array $position,
         public ?array $target,
     ) {
