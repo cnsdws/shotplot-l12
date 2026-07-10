@@ -141,8 +141,9 @@ class PositionsController extends Controller
 
     public function handleEditFirestring(Request $request, $id)
     {
-        $firestring = Firestring::findOrFail($request->input('id'));
+        $firestring = Firestring::findOrFail($id);
         $match_id = $firestring->match_id;
+
         $request->merge([
             'windspeed' => $request->input('windspeed') ?? 0,
         ]);
@@ -169,9 +170,32 @@ class PositionsController extends Controller
             $fields[] = "shot{$i}y";
         }
 
-        $firestring->update($request->only($fields));
+        $data = $request->only($fields);
 
-        return redirect('indexfirestring/'.$match_id);
+        // Legacy schema has several NOT NULL string columns.
+        // Convert nulls from empty form fields into empty strings.
+        foreach ([
+            'target',
+            'relay',
+            'lightdirection',
+            'winddirection',
+            'temperature',
+            'sky_condition',
+            'range_notes',
+        ] as $field) {
+            if (array_key_exists($field, $data) && $data[$field] === null) {
+                $data[$field] = '';
+            }
+        }
+
+        // Preserve numeric defaults.
+        $data['windspeed'] = $data['windspeed'] ?? 0;
+        $data['elevation'] = $data['elevation'] ?? 0;
+        $data['windage'] = $data['windage'] ?? 0;
+
+        $firestring->update($data);
+
+        return redirect('indexfirestring/' . $match_id);
     }
 
     public function deleteFirestring($id)

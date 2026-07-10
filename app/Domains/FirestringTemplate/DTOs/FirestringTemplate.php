@@ -30,7 +30,9 @@ final readonly class FirestringTemplate
             // Legacy schema currently stores the stage name in distance.
             'distance' => $this->stageName,
 
-            'target' => $this->target,
+            // Legacy target field stores the range target number, not target type.
+            'target' => '',
+
             'relay' => $this->relay,
             'lightdirection' => $this->lightDirection,
             'winddirection' => $this->windDirection,

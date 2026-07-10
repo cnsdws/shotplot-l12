@@ -62,15 +62,22 @@ class FirestringTemplateServiceTest extends TestCase
         );
 
         $this->assertSame(1, $template->number);
+
         $this->assertSame(
             '200 Yard Slow Fire',
             $template->stageName
         );
-        $this->assertSame(10, $template->shotCount);
+
+        $this->assertSame(
+            10,
+            $template->shotCount
+        );
+
         $this->assertSame(
             'SR - 200 Yard High Power',
             $template->target
         );
+
         $this->assertSame(0, $template->windSpeed);
         $this->assertSame(0, $template->elevation);
         $this->assertSame(0, $template->windage);
@@ -112,17 +119,23 @@ class FirestringTemplateServiceTest extends TestCase
             ->build($stagePlan)
             ->toLegacyAttributes(42);
 
-        $this->assertSame(42, $attributes['match_id']);
+        $this->assertSame(
+            42,
+            $attributes['match_id']
+        );
+
         $this->assertSame(
             4,
             $attributes['fire_string_number']
         );
+
         $this->assertSame(
             '600 Yard Slow Fire',
             $attributes['distance']
         );
+
         $this->assertSame(
-            'MR-1 - 600 Yard Mid-Range',
+            '',
             $attributes['target']
         );
 
