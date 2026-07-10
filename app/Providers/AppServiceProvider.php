@@ -17,6 +17,10 @@ use App\Domains\RuleSet\Contracts\RuleSetServiceInterface;
 use App\Domains\RuleSet\Services\RuleSetService;
 use App\Domains\MatchFactory\Contracts\MatchFactoryServiceInterface;
 use App\Domains\MatchFactory\Services\MatchFactoryService;
+use App\Domains\Firestring\Contracts\FirestringServiceInterface;
+use App\Domains\Firestring\Services\FirestringService;
+use App\Domains\Shot\Contracts\LegacyShotMapperInterface;
+use App\Domains\Shot\Services\LegacyShotMapper;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -61,14 +65,19 @@ class AppServiceProvider extends ServiceProvider
             MatchFactoryService::class
         );
         
-        $this->app->singleton(
-            MatchFactoryServiceInterface::class,
-            MatchFactoryService::class
-        );
-        
         $this->app->bind(
             \App\Domains\FirestringTemplate\Contracts\FirestringTemplateServiceInterface::class,
             \App\Domains\FirestringTemplate\Services\FirestringTemplateService::class,
+        );
+        
+        $this->app->bind(
+            FirestringServiceInterface::class,
+            FirestringService::class
+        );
+        
+        $this->app->bind(
+            LegacyShotMapperInterface::class,
+            LegacyShotMapper::class
         );
         
     }

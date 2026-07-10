@@ -7,6 +7,7 @@ use App\Models\ShootingMatch;
 use App\Models\User;
 use App\Models\Rifle;
 use App\Models\BallisticProfile;
+use App\Domains\Firestring\Contracts\FirestringServiceInterface;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 
+
 class PositionsController extends Controller
 {
+    public function __construct(private readonly FirestringServiceInterface $firestrings,) {
+    }
+    
     public function index()
     {
         $matches = ShootingMatch::where('user_id', Auth::id())->get();
@@ -142,60 +147,14 @@ class PositionsController extends Controller
     public function handleEditFirestring(Request $request, $id)
     {
         $firestring = Firestring::findOrFail($id);
-        $match_id = $firestring->match_id;
+        $matchId = $firestring->match_id;
 
-        $request->merge([
-            'windspeed' => $request->input('windspeed') ?? 0,
-        ]);
+        $this->firestrings->update(
+            $firestring,
+            $request->all()
+        );
 
-        $fields = [
-            'fire_string_number',
-            'distance',
-            'ballistic_profile_id',
-            'target',
-            'relay',
-            'lightdirection',
-            'winddirection',
-            'windspeed',
-            'temperature',
-            'sky_condition',
-            'range_notes',
-            'elevation',
-            'windage',
-        ];
-
-        for ($i = 1; $i <= 20; $i++) {
-            $fields[] = "shot{$i}value";
-            $fields[] = "shot{$i}x";
-            $fields[] = "shot{$i}y";
-        }
-
-        $data = $request->only($fields);
-
-        // Legacy schema has several NOT NULL string columns.
-        // Convert nulls from empty form fields into empty strings.
-        foreach ([
-            'target',
-            'relay',
-            'lightdirection',
-            'winddirection',
-            'temperature',
-            'sky_condition',
-            'range_notes',
-        ] as $field) {
-            if (array_key_exists($field, $data) && $data[$field] === null) {
-                $data[$field] = '';
-            }
-        }
-
-        // Preserve numeric defaults.
-        $data['windspeed'] = $data['windspeed'] ?? 0;
-        $data['elevation'] = $data['elevation'] ?? 0;
-        $data['windage'] = $data['windage'] ?? 0;
-
-        $firestring->update($data);
-
-        return redirect('indexfirestring/' . $match_id);
+        return redirect('indexfirestring/' . $matchId);
     }
 
     public function deleteFirestring($id)

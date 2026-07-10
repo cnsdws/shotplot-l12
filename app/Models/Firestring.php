@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Domains\Shot\Contracts\LegacyShotMapperInterface;
+use App\Domains\Shot\DTOs\ShotCollection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ShootingMatch;
-use App\Models\BallisticProfile;
 
 class Firestring extends Model
 {
@@ -87,55 +87,51 @@ class Firestring extends Model
 
     public function match()
     {
-        return $this->belongsTo(ShootingMatch::class, 'match_id');
+        return $this->belongsTo(
+            ShootingMatch::class,
+            'match_id'
+        );
     }
-    public function getShotCountAttribute()
+
+    public function getShotCountAttribute(): int
     {
-        return $this->distance === '600 Yard Slow Fire' ? 20 : 10;
+        return $this->distance === '600 Yard Slow Fire'
+            ? 20
+            : 10;
     }
+
     public function adjustments()
     {
-        return $this->hasMany(FirestringAdjustment::class);
+        return $this->hasMany(
+            FirestringAdjustment::class
+        );
     }
-    public function totalScore()
-    {
-        $total = 0;
 
-        for ($i = 1; $i <= $this->shot_count; $i++) {
-            $value = strtoupper(trim((string) $this->{'shot'.$i.'value'}));
-
-            if ($value === 'X') {
-                $total += 10;
-            } elseif (is_numeric($value)) {
-                $total += (int) $value;
-            }
-        }
-
-        return $total;
-    }
-    
     public function ballisticProfile()
     {
-        return $this->belongsTo(BallisticProfile::class);
+        return $this->belongsTo(
+            BallisticProfile::class
+        );
     }
 
-    public function xCount()
+    public function shots(): ShotCollection
     {
-        $count = 0;
-
-        for ($i = 1; $i <= $this->shot_count; $i++) {
-            $value = strtoupper(trim((string) $this->{'shot'.$i.'value'}));
-
-            if ($value === 'X') {
-                $count++;
-            }
-        }
-
-        return $count;
+        return app(LegacyShotMapperInterface::class)
+            ->fromFirestring($this);
     }
 
-    public function formattedScore()
+    public function totalScore(): int
     {
-        return $this->totalScore() . '-' . $this->xCount() . 'X';
+        return $this->shots()->totalScore();
+    }
+
+    public function xCount(): int
+    {
+        return $this->shots()->xCount();
+    }
+
+    public function formattedScore(): string
+    {
+        return $this->shots()->formattedScore();
     }
 }
