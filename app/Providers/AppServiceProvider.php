@@ -18,6 +18,7 @@ use App\Domains\RuleSet\Services\RuleSetService;
 use App\Domains\MatchFactory\Contracts\MatchFactoryServiceInterface;
 use App\Domains\MatchFactory\Services\MatchFactoryService;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -53,6 +54,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             RuleSetServiceInterface::class,
             RuleSetService::class
+        );
+        
+        $this->app->singleton(
+            MatchFactoryServiceInterface::class,
+            MatchFactoryService::class
         );
         
         $this->app->singleton(

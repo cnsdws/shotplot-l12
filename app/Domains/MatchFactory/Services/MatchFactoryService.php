@@ -2,7 +2,7 @@
 
 namespace App\Domains\MatchFactory\Services;
 
-use App\Domains\CourseResolver\Contracts\CourseResolverInterface;
+use App\Domains\CoursePlanner\Contracts\CoursePlannerServiceInterface;
 use App\Domains\MatchFactory\Contracts\MatchFactoryServiceInterface;
 use App\Models\Firestring;
 use App\Models\ShootingMatch;
@@ -10,28 +10,39 @@ use App\Models\ShootingMatch;
 class MatchFactoryService implements MatchFactoryServiceInterface
 {
     public function __construct(
-        protected CourseResolverInterface $courseResolver,
+        protected CoursePlannerServiceInterface $coursePlanner,
     ) {
     }
 
     public function generateFirestrings(ShootingMatch $match, string $courseId): array
     {
-        $resolvedCourse = $this->courseResolver->resolve($courseId);
+        $plan = $this->coursePlanner->buildPlan($courseId);
 
-        if (empty($resolvedCourse)) {
+        if (empty($plan->stages)) {
             return [];
         }
 
         $created = [];
 
-        foreach ($resolvedCourse['stages'] as $index => $resolvedStage) {
-            $stage = $resolvedStage['stage'];
-
+        foreach ($plan->stages as $stagePlan) {
+            $stage = $stagePlan->stage;
+            $target = $stagePlan->target;
+            
             $created[] = Firestring::create([
                 'match_id' => $match->id,
-                'fire_string_number' => $index + 1,
+                'fire_string_number' => $stagePlan->number,
                 'distance' => $stage['name'],
                 'shot_count' => $stage['shotCount'],
+                'target' => $target['label'] ?? '',
+                'relay' => '',
+                'lightdirection' => '',
+                'winddirection' => '',
+                'windspeed' => 0,
+                'temperature' => '',
+                'sky_condition' => '',
+                'range_notes' => '',
+                'elevation' => 0,
+                'windage' => 0,
             ]);
         }
 

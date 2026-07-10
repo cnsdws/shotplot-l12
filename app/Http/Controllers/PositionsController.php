@@ -11,6 +11,7 @@ use App\Models\BallisticProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 
 class PositionsController extends Controller
@@ -40,9 +41,16 @@ class PositionsController extends Controller
         $data['riflenumber'] = '';
         $data['user_id'] = Auth::id();
 
-        ShootingMatch::create($data);
+        $match = DB::transaction(function () use ($data) {
+            $match = ShootingMatch::create($data);
 
-        return redirect()->action([self::class, 'index']);
+            app(\App\Domains\MatchFactory\Contracts\MatchFactoryServiceInterface::class)
+                ->generateFirestrings($match, 'nra-hp-national-match');
+
+            return $match;
+        });
+
+        return redirect('/indexfirestring/'.$match->id);
     }
 
     public function edit(ShootingMatch $match)
