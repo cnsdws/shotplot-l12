@@ -42,7 +42,6 @@ use App\Http\Controllers\BallisticProfileController;
     Route::get('/indexfirestring/{id}', [PositionsController::class, 'indexFirestring']);
     Route::get('/firestring/{id}', [PositionsController::class, 'indexFirestring']);
     Route::get('/displayfirestring/{id}', [PositionsController::class, 'displayFirestring']);
-    Route::get('/displayfirestring/{id}/print', [PositionsController::class, 'printFirestring']);
 
     Route::get('/dashboard', [PositionsController::class, 'index'])->name('dashboard');
 

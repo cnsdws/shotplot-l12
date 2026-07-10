@@ -66,6 +66,11 @@ class AppServiceProvider extends ServiceProvider
             MatchFactoryService::class
         );
         
+        $this->app->bind(
+            \App\Domains\FirestringTemplate\Contracts\FirestringTemplateServiceInterface::class,
+            \App\Domains\FirestringTemplate\Services\FirestringTemplateService::class,
+        );
+        
     }
 
     /**
